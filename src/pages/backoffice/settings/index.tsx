@@ -7,24 +7,43 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SettingsPage = () => {
+  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
   const locations = useAppSelector((state) => state.location.items);
-  const [locationId, setLocationId] = useState<number>();
+  // console.log("selectedLocationId", selectedLocationId);
 
-  const handleLocationChange = (evt: SelectChangeEvent<number>) => {
-    localStorage.setItem("selectedLocationId", String(evt.target.value));
-  };
+  useEffect(() => {
+    if (locations.length) {
+      const currentLocationId = localStorage.getItem("selectedLocationId");
+      if (!currentLocationId) {
+        const firstLocationId = String(locations[0].id);
+        setSelectedLocationId(firstLocationId);
+      } else {
+        setSelectedLocationId(currentLocationId);
+      }
+    }
+  }, [locations]);
+
+  // const handleLocationChange = (evt: SelectChangeEvent<number>) => {
+  //   localStorage.setItem("selectedLocationId", String(evt.target.value));
+  // };
+
+  if (!selectedLocationId) return null;
 
   return (
     <Box>
       <FormControl fullWidth>
         <InputLabel>Location</InputLabel>
         <Select
-          value={locationId}
+          value={selectedLocationId}
           label="Location"
-          onChange={handleLocationChange}
+          onChange={(evt) => {
+            const id = evt.target.value;
+            localStorage.setItem("selectedLocationId", id);
+            setSelectedLocationId(id);
+          }}
         >
           {locations.map((location) => (
             <MenuItem key={location.id} value={location.id}>

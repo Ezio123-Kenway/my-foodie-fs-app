@@ -10,3 +10,8 @@ interface BaseOptions {
   onSuccess?: (data?: any) => void;
   onError?: (data?: any) => void;
 }
+
+export interface CreateLocationOptions extends BaseOptions {
+  name: string;
+  address: string;
+}
