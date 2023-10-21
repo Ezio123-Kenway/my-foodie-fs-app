@@ -1,10 +1,11 @@
+import { ItemCard } from "@/components/ItemCard";
 import { NewMenu } from "@/components/NewMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getMenus } from "@/store/slices/menuSlice";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import LocalDiningIcon from "@mui/icons-material/LocalDining";
 
 const MenusPage = () => {
   const { data } = useSession();
@@ -31,16 +32,11 @@ const MenusPage = () => {
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {menus.map((menu) => (
-          <Link
-            href={`menus/${menu.id}`}
+          <ItemCard
             key={menu.id}
-            style={{ textDecoration: "none" }}
-          >
-            <Paper elevation={3} sx={{ width: 150, height: 150, m: 2 }}>
-              <Typography variant="h6">{menu.name}</Typography>
-              <Typography variant="h6">{menu.price}</Typography>
-            </Paper>
-          </Link>
+            title={menu.name}
+            icon={<LocalDiningIcon />}
+          />
         ))}
       </Box>
       <NewMenu open={open} setOpen={setOpen} />
