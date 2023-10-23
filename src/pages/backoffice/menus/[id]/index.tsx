@@ -1,7 +1,6 @@
 import { DeleteMenu } from "@/components/DeleteMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { deleteMenuThunk, updateMenuThunk } from "@/store/slices/menuSlice";
-import { CreateMenuType } from "@/types/menu";
 import { Box, Button, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -20,8 +19,7 @@ const MenuDetailPage = () => {
     price: menu.price as number,
   };
 
-  const [updatedMenu, setUpdatedMenu] =
-    useState<CreateMenuType>(defaultUpdatedMenu);
+  const [updatedMenu, setUpdatedMenu] = useState(defaultUpdatedMenu);
 
   const nameIsChanged = updatedMenu.name !== defaultUpdatedMenu.name;
 
@@ -32,7 +30,7 @@ const MenuDetailPage = () => {
   const isChanged = (nameIsChanged || priceIsChanged) && isValid;
 
   const handleUpdateMenu = () => {
-    dispatch(updateMenuThunk({ ...updatedMenu, id: menuId }));
+    dispatch(updateMenuThunk());
     router.push("/backoffice/menus");
   };
 

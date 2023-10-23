@@ -5,6 +5,8 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import LocalDiningIcon from "@mui/icons-material/LocalDining";
+import { ItemCard } from "@/components/ItemCard";
 
 const MenusPage = () => {
   const { data } = useSession();
@@ -36,10 +38,7 @@ const MenusPage = () => {
             key={menu.id}
             style={{ textDecoration: "none" }}
           >
-            <Paper elevation={3} sx={{ width: 150, height: 150, m: 2 }}>
-              <Typography variant="h6">{menu.name}</Typography>
-              <Typography variant="h6">{menu.price}</Typography>
-            </Paper>
+            <ItemCard icon={<LocalDiningIcon />} title={menu.name} />
           </Link>
         ))}
       </Box>
