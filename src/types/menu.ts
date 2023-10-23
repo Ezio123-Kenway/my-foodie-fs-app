@@ -15,9 +15,8 @@ export interface GetMenusOptions extends BaseOptions {
   locationId: string;
 }
 
-export interface CreateMenuType {
-  id?: number;
+export interface CreateMenuOptions extends BaseOptions {
   name: string;
   price: number;
-  description?: string;
+  menuCategoryIds: number[];
 }

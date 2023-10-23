@@ -1,6 +1,7 @@
+import { ItemCard } from "@/components/ItemCard";
 import { NewLocation } from "@/components/NewLocation";
 import { useAppSelector } from "@/store/hooks";
-
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 
@@ -18,9 +19,15 @@ const LocationsPage = () => {
           Create location
         </Button>
       </Box>
-      {locations.map((location) => (
-        <Typography key={location.id}>{location.name}</Typography>
-      ))}
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        {locations.map((location) => (
+          <ItemCard
+            key={location.id}
+            title={location.name}
+            icon={<LocationOnIcon />}
+          />
+        ))}
+      </Box>
       <NewLocation open={open} setOpen={setOpen} />
     </Box>
   );
