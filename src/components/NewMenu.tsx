@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -18,8 +19,6 @@ import {
   TextField,
 } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
-import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
-import { isJSDocReturnTag } from "typescript";
 
 interface Props {
   open: boolean;
@@ -36,9 +35,6 @@ export const NewMenu = ({ open, setOpen }: Props) => {
   const [newMenu, setNewMenu] = useState<CreateMenuOptions>(defaultMenu);
   const dispatch = useAppDispatch();
   const menuCategories = useAppSelector((state) => state.menuCategory.items);
-  // const [selectedMenuCategoryIds, setSelectedMenuCategoryIds] = useState<
-  //   number[]
-  // >([]);
 
   const handleOnChange = (evt: SelectChangeEvent<number[]>) => {
     const selectedIds = evt.target.value as number[];
@@ -48,10 +44,12 @@ export const NewMenu = ({ open, setOpen }: Props) => {
   const { name, price, menuCategoryIds } = newMenu;
   const canCreate = name && price > 0 && menuCategoryIds.length;
 
-  const handleCreateMenu = () => {
-    // dispatch(createMenu(newMenu));
-    console.log("newMenu: ", newMenu);
+  const onSuccess = () => {
     setOpen(false);
+  };
+
+  const handleCreateMenu = () => {
+    dispatch(createMenu({ ...newMenu, onSuccess }));
   };
 
   return (
@@ -76,6 +74,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
             label="Name"
             variant="outlined"
             type="string"
+            sx={{ mt: 1 }}
             defaultValue={defaultMenu.name}
             onChange={(evt) =>
               setNewMenu({ ...newMenu, name: evt.target.value })
@@ -86,7 +85,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
             label="Price"
             variant="outlined"
             type="number"
-            sx={{ my: 3 }}
+            sx={{ mt: 4, mb: 2 }}
             defaultValue={defaultMenu.price}
             onChange={(evt) =>
               setNewMenu({ ...newMenu, price: Number(evt.target.value) })
@@ -99,15 +98,16 @@ export const NewMenu = ({ open, setOpen }: Props) => {
               value={newMenu.menuCategoryIds}
               input={<OutlinedInput label="Menu Category" />}
               onChange={handleOnChange}
+              sx={{ width: 400 }}
               renderValue={(menuCategoryIds) => {
                 return menuCategories
                   .filter((menuCategory) =>
                     menuCategoryIds.includes(menuCategory.id)
                   )
-                  .map((item) => item.name)
-                  .join(", ");
+                  .map((item) => (
+                    <Chip label={item.name} sx={{ mr: 1 }} key={item.id} />
+                  ));
               }}
-              sx={{ width: 400 }}
               MenuProps={{
                 PaperProps: {
                   style: {

@@ -16,7 +16,7 @@ export const DeleteMenu = ({ open, setOpen, menuId }: Props) => {
   const router = useRouter();
 
   const handleDeleteMenu = () => {
-    dispatch(deleteMenuThunk(menuId));
+    dispatch(deleteMenuThunk({ id: menuId }));
     router.push("/backoffice/menus");
   };
 
