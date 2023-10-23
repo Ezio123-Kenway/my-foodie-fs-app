@@ -28,9 +28,6 @@ const defaultMenu = { name: "", price: 0, menuCategoryIds: [] };
 
 export const NewMenu = ({ open, setOpen }: Props) => {
   const menuCategories = useAppSelector((state) => state.menuCategory.items);
-  // const [selectedMenuCategoryIds, setSelectedMenuCategoryIds] = useState<
-  //   number[]
-  // >([]);
 
   const [newMenu, setNewMenu] = useState<CreateMenuOptions>(defaultMenu);
   const dispatch = useAppDispatch();
@@ -91,7 +88,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
             <InputLabel>Menu Category</InputLabel>
             <Select
               multiple
-              value={newMenu.menuCategoryIds}
+              value={menuCategoryIds}
               label="Menu Category"
               sx={{ width: 400 }}
               onChange={handleOnChange}
@@ -116,7 +113,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
               {menuCategories.map((menuCategory) => (
                 <MenuItem value={menuCategory.id} key={menuCategory.id}>
                   <Checkbox
-                    checked={newMenu.menuCategoryIds.includes(menuCategory.id)}
+                    checked={menuCategoryIds.includes(menuCategory.id)}
                   />
                   <ListItemText primary={menuCategory.name} />
                 </MenuItem>
