@@ -24,7 +24,6 @@ const MenuDetailPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
   const menuId = Number(router.query.id);
-  console.log("menuId: ", menuId);
   const menus = useAppSelector((state) => state.menu.items);
   const menu = menus.find((menu) => menu.id === menuId) as Menu;
 

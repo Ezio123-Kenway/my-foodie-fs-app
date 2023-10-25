@@ -41,8 +41,8 @@ export default async function handler(
       data: { name, price },
     });
     await prisma.menuCategoryMenu.deleteMany({ where: { menuId: id } });
-    const menuCategoryMenuDatas = menuCategoryIds.map((menuCategoryId) => ({
-      menuCategoryId,
+    const menuCategoryMenuDatas = menuCategoryIds.map((selectedId) => ({
+      menuCategoryId: selectedId,
       menuId: id,
     }));
     console.log("menuCategoryMenuDatas: ", menuCategoryMenuDatas);
