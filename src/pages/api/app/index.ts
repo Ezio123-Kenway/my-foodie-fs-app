@@ -120,7 +120,7 @@ export default async function handler(
     });
     const menuIds = menuCategoryMenus.map((item) => item.menuId);
     const menus = await prisma.menu.findMany({
-      where: { id: { in: menuIds } },
+      where: { id: { in: menuIds }, isArchived: false },
     });
 
     // 5 find addonCategories

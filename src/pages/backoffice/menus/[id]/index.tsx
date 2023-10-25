@@ -88,6 +88,7 @@ const MenuDetailPage = () => {
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <TextField
           variant="outlined"
+          type="string"
           sx={{ width: "100%" }}
           defaultValue={menu.name}
           onChange={(evt) =>
@@ -96,6 +97,7 @@ const MenuDetailPage = () => {
         ></TextField>
         <TextField
           variant="outlined"
+          type="number"
           sx={{ width: "100%", my: 3 }}
           defaultValue={menu.price}
           onChange={(evt) =>

@@ -49,6 +49,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
   };
 
   const handleCreateMenu = () => {
+    console.log("newMenu: ", newMenu);
     dispatch(createMenu({ ...newMenu, onSuccess }));
   };
 
