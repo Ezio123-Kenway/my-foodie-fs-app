@@ -1,7 +1,5 @@
 import { DeleteMenu } from "@/components/DeleteMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { deleteMenuThunk, updateMenuThunk } from "@/store/slices/menuSlice";
-import { CreateMenuType } from "@/types/menu";
 import { Box, Button, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -20,21 +18,12 @@ const MenuDetailPage = () => {
     price: menu.price as number,
   };
 
-  const [updatedMenu, setUpdatedMenu] =
-    useState<CreateMenuType>(defaultUpdatedMenu);
+  const [updatedMenu, setUpdatedMenu] = useState();
 
-  const nameIsChanged = updatedMenu.name !== defaultUpdatedMenu.name;
-
-  const priceIsChanged = updatedMenu.price !== defaultUpdatedMenu.price;
-
-  const isValid = updatedMenu.name && updatedMenu.price > 0;
-
-  const isChanged = (nameIsChanged || priceIsChanged) && isValid;
-
-  const handleUpdateMenu = () => {
-    dispatch(updateMenuThunk({ ...updatedMenu, id: menuId }));
-    router.push("/backoffice/menus");
-  };
+  // const handleUpdateMenu = () => {
+  //   dispatch(updateMenuThunk({ ...updatedMenu, id: menuId }));
+  //   router.push("/backoffice/menus");
+  // };
 
   return (
     <Box>
@@ -52,24 +41,13 @@ const MenuDetailPage = () => {
           variant="outlined"
           sx={{ width: "100%" }}
           defaultValue={defaultUpdatedMenu.name}
-          onChange={(evt) =>
-            setUpdatedMenu({ ...updatedMenu, name: evt.target.value })
-          }
         ></TextField>
         <TextField
           variant="outlined"
           sx={{ width: "100%", my: 3 }}
           defaultValue={defaultUpdatedMenu.price}
-          onChange={(evt) =>
-            setUpdatedMenu({ ...updatedMenu, price: Number(evt.target.value) })
-          }
         ></TextField>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!isChanged}
-          onClick={handleUpdateMenu}
-        >
+        <Button variant="contained" color="primary" disabled={true}>
           Update
         </Button>
         <DeleteMenu open={open} setOpen={setOpen} menuId={menuId} />

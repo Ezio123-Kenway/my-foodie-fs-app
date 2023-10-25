@@ -1,4 +1,4 @@
-import { CreateMenuType, GetMenusOptions, MenuSliceState } from "@/types/menu";
+import { GetMenusOptions, MenuSliceState } from "@/types/menu";
 import { config } from "@/utils/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -36,7 +36,7 @@ export const getMenus = createAsyncThunk(
 
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
-  async (payload: CreateMenuType, thunkApi) => {
+  async (payload, thunkApi) => {
     const response = await fetch(`${config.apiBaseUrl}/menus`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -47,29 +47,29 @@ export const createMenu = createAsyncThunk(
   }
 );
 
-export const updateMenuThunk = createAsyncThunk(
-  "menu/updateMenuThunk",
-  async (payload: CreateMenuType, thunkApi) => {
-    const { id, name, price } = payload;
-    const response = await fetch(`${config.apiBaseUrl}/menus/${id}`, {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ name, price }),
-    });
-    const updatedMenu = await response.json();
-    thunkApi.dispatch(updateMenu(updatedMenu));
-  }
-);
+// export const updateMenuThunk = createAsyncThunk(
+//   "menu/updateMenuThunk",
+//   async (payload, thunkApi) => {
+//     const { id, name, price } = payload;
+//     const response = await fetch(`${config.apiBaseUrl}/menus/${id}`, {
+//       method: "PUT",
+//       headers: { "content-type": "application/json" },
+//       body: JSON.stringify({ name, price }),
+//     });
+//     const updatedMenu = await response.json();
+//     thunkApi.dispatch(updateMenu(updatedMenu));
+//   }
+// );
 
-export const deleteMenuThunk = createAsyncThunk(
-  "menu/deleteMenuThunk",
-  async (payload: number, thunkApi) => {
-    await fetch(`${config.apiBaseUrl}/menus/${payload}`, {
-      method: "DELETE",
-    });
-    thunkApi.dispatch(deleteMenu(payload));
-  }
-);
+// export const deleteMenuThunk = createAsyncThunk(
+//   "menu/deleteMenuThunk",
+//   async (payload: number, thunkApi) => {
+//     await fetch(`${config.apiBaseUrl}/menus/${payload}`, {
+//       method: "DELETE",
+//     });
+//     thunkApi.dispatch(deleteMenu(payload));
+//   }
+// );
 
 export const menuSlice = createSlice({
   name: "menu",
