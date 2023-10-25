@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
-import { CreateMenuOptions } from "@/types/menu";
+import { CreateMenuOptions, UpdateMenuOptions } from "@/types/menu";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +17,7 @@ export default async function handler(
     return res.status(200).send(menus);
   } else if (method === "POST") {
     const { name, price, menuCategoryIds } = req.body as CreateMenuOptions;
-    const isValid = name && price > 0 && menuCategoryIds.length;
+    const isValid = name && price !== undefined && menuCategoryIds.length > 0;
     if (!isValid) return res.status(400).send("Bad request");
     const data = { name, price };
     const newMenu = await prisma.menu.create({ data });
@@ -31,6 +31,28 @@ export default async function handler(
       )
     );
     return res.status(200).send({ newMenu, menuCategoryMenus });
+  } else if (method === "PUT") {
+    const { id, name, price, menuCategoryIds } = req.body as UpdateMenuOptions;
+    const isValid =
+      id && name && price !== undefined && menuCategoryIds.length > 0;
+    if (!isValid) return res.status(400).send("Bad request");
+    const updatedMenu = await prisma.menu.update({
+      where: { id },
+      data: { name, price },
+    });
+    await prisma.menuCategoryMenu.deleteMany({ where: { menuId: id } });
+    const menuCategoryMenuDatas = menuCategoryIds.map((menuCategoryId) => ({
+      menuCategoryId,
+      menuId: id,
+    }));
+    console.log("menuCategoryMenuDatas: ", menuCategoryMenuDatas);
+    const createdMenuCategoryMenus = await prisma.$transaction(
+      menuCategoryMenuDatas.map(
+        (data: { menuCategoryId: number; menuId: number }) =>
+          prisma.menuCategoryMenu.create({ data })
+      )
+    );
+    return res.status(200).send({ updatedMenu, createdMenuCategoryMenus });
   } else if (method === "DELETE") {
     const menuId = Number(req.query.id);
     if (!menuId) return res.status(400).send("Bad request");

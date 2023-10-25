@@ -1,5 +1,6 @@
 import { DeleteMenu } from "@/components/DeleteMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { updateMenuThunk } from "@/store/slices/menuSlice";
 import { UpdateMenuOptions } from "@/types/menu";
 // import { deleteMenuThunk, updateMenuThunk } from "@/store/slices/menuSlice";
 import {
@@ -15,15 +16,17 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
+import { Menu } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const MenuDetailPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
   const menuId = Number(router.query.id);
+  console.log("menuId: ", menuId);
   const menus = useAppSelector((state) => state.menu.items);
-  const menu = menus.find((menu) => menu.id === menuId);
+  const menu = menus.find((menu) => menu.id === menuId) as Menu;
 
   const menuCategories = useAppSelector((state) => state.menuCategory.items);
   const menuCategoryMenus = useAppSelector(
@@ -35,32 +38,40 @@ const MenuDetailPage = () => {
 
   const dispatch = useAppDispatch();
 
-  if (!menu) return null;
+  const [updatedMenu, setUpdatedMenu] = useState<
+    UpdateMenuOptions | undefined
+  >();
 
-  const defaultUpdatedMenu = {
-    id: menu.id as number,
-    name: menu.name as string,
-    price: menu.price as number,
-    menuCategoryIds,
-  };
+  useEffect(() => {
+    if (menu) {
+      setUpdatedMenu({
+        id: menu.id,
+        name: menu.name,
+        price: menu.price,
+        menuCategoryIds,
+      });
+    }
+  }, [menu]);
 
-  const [updatedMenu, setUpdatedMenu] =
-    useState<UpdateMenuOptions>(defaultUpdatedMenu);
+  if (!menu || !updatedMenu) return null;
 
-  const nameIsChanged = updatedMenu.name !== defaultUpdatedMenu.name;
-
-  const priceIsChanged = updatedMenu.price !== defaultUpdatedMenu.price;
-
-  const isValid = updatedMenu.name && updatedMenu.price > 0;
-
-  const isChanged = (nameIsChanged || priceIsChanged) && isValid;
+  const isValid =
+    updatedMenu.name &&
+    updatedMenu.price !== undefined &&
+    updatedMenu.menuCategoryIds.length > 0;
 
   const handleOnChange = (evt: SelectChangeEvent<number[]>) => {
-    console.log(evt.target.value);
+    console.log("value: ", evt.target.value);
+    const ids = evt.target.value as number[];
+    setUpdatedMenu({ ...updatedMenu, menuCategoryIds: ids });
+  };
+
+  const onSuccess = () => {
+    router.push("/backoffice/menus");
   };
 
   const handleUpdateMenu = () => {
-    router.push("/backoffice/menus");
+    dispatch(updateMenuThunk({ ...updatedMenu, onSuccess }));
   };
 
   return (
@@ -78,7 +89,7 @@ const MenuDetailPage = () => {
         <TextField
           variant="outlined"
           sx={{ width: "100%" }}
-          defaultValue={defaultUpdatedMenu.name}
+          defaultValue={menu.name}
           onChange={(evt) =>
             setUpdatedMenu({ ...updatedMenu, name: evt.target.value })
           }
@@ -86,7 +97,7 @@ const MenuDetailPage = () => {
         <TextField
           variant="outlined"
           sx={{ width: "100%", my: 3 }}
-          defaultValue={defaultUpdatedMenu.price}
+          defaultValue={menu.price}
           onChange={(evt) =>
             setUpdatedMenu({ ...updatedMenu, price: Number(evt.target.value) })
           }
@@ -128,7 +139,7 @@ const MenuDetailPage = () => {
         <Button
           variant="contained"
           color="primary"
-          disabled={!isChanged}
+          disabled={!isValid}
           onClick={handleUpdateMenu}
           sx={{ mt: 3 }}
         >

@@ -42,7 +42,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
   };
 
   const { name, price, menuCategoryIds } = newMenu;
-  const canCreate = name && price > 0 && menuCategoryIds.length;
+  const canCreate = name && price !== undefined && menuCategoryIds.length;
 
   const onSuccess = () => {
     setOpen(false);
@@ -104,9 +104,8 @@ export const NewMenu = ({ open, setOpen }: Props) => {
                   .filter((menuCategory) =>
                     menuCategoryIds.includes(menuCategory.id)
                   )
-                  .map((item) => (
-                    <Chip label={item.name} sx={{ mr: 1 }} key={item.id} />
-                  ));
+                  .map((item) => item.name)
+                  .join(", ");
               }}
               MenuProps={{
                 PaperProps: {
