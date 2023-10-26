@@ -1,14 +1,10 @@
 import { Location } from "@prisma/client";
+import { BaseOptions } from "./app";
 
 export interface LocationSliceState {
   items: Location[];
   isLoading: boolean;
   error: Error | null;
-}
-
-interface BaseOptions {
-  onSuccess?: (data?: any) => void;
-  onError?: (data?: any) => void;
 }
 
 export interface CreateLocationOptions extends BaseOptions {

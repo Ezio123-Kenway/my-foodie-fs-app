@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { createMenu } from "@/store/slices/menuSlice";
+import { setOpenSnackBar } from "@/store/slices/snackBarSlice";
 import { CreateMenuOptions } from "@/types/menu";
 import {
   Box,
@@ -33,7 +34,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
   const dispatch = useAppDispatch();
 
   const { name, price, menuCategoryIds } = newMenu;
-  const canCreate = name && price > 0 && menuCategoryIds.length;
+  const canCreate = name && price !== undefined && menuCategoryIds.length;
 
   const handleOnChange = (evt: SelectChangeEvent<number[]>) => {
     const selectedIds = evt.target.value as number[];
@@ -41,8 +42,14 @@ export const NewMenu = ({ open, setOpen }: Props) => {
     setNewMenu({ ...newMenu, menuCategoryIds: selectedIds });
   };
 
+  const onSuccess = () => {
+    setOpen(false);
+    dispatch(setOpenSnackBar({ message: "Created new menu successfully.." }));
+  };
+
   const handleCreateMenu = () => {
-    console.log(newMenu);
+    console.log("newMenu: ", newMenu);
+    dispatch(createMenu({ ...newMenu, onSuccess }));
   };
 
   return (

@@ -1,6 +1,16 @@
-import { GetMenusOptions, MenuSliceState } from "@/types/menu";
+import {
+  CreateMenuOptions,
+  DeleteMenuOptions,
+  GetMenusOptions,
+  MenuSliceState,
+  UpdateMenuOptions,
+} from "@/types/menu";
 import { config } from "@/utils/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  addMenuCategoryMenus,
+  replaceMenuCategoryMenus,
+} from "./menuCategoryMenuSlice";
 
 const initialState: MenuSliceState = {
   items: [],
@@ -8,68 +18,87 @@ const initialState: MenuSliceState = {
   error: null,
 };
 
-// export const getMenus = createAsyncThunk(
-//   "menu/getMenus",
-//   async (options: GetMenusOptions, thunkApi) => {
-//     const { locationId, onSuccess, onError } = options;
-//     try {
-//       const response = await fetch(
-//         `${config.apiBaseUrl}/menu?locationId=${locationId}`
-//       );
-//       const menus = await response.json();
-//       thunkApi.dispatch(setMenus(menus));
-//       onSuccess && onSuccess();
-//     } catch (error) {
-//       onError && onError();
-//     }
-//   }
-// );
-
 export const getMenus = createAsyncThunk(
   "menu/getMenus",
-  async (_, thunkApi) => {
-    const response = await fetch(`${config.apiBaseUrl}/menus`);
-    const menus = await response.json();
-    thunkApi.dispatch(setMenus(menus));
+  async (options: GetMenusOptions, thunkApi) => {
+    const { locationId, onSuccess, onError } = options;
+    try {
+      const response = await fetch(
+        `${config.apiBaseUrl}/menus?locationId=${locationId}`
+      );
+      const menus = await response.json();
+      thunkApi.dispatch(setMenus(menus));
+      onSuccess && onSuccess();
+    } catch (err) {
+      onError && onError();
+    }
   }
 );
+
+// export const getMenus = createAsyncThunk(
+//   "menu/getMenus",
+//   async (_, thunkApi) => {
+//     const response = await fetch(`${config.apiBaseUrl}/menus`);
+//     const menus = await response.json();
+//     thunkApi.dispatch(setMenus(menus));
+//   }
+// );
 
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
-  async (payload, thunkApi) => {
-    const response = await fetch(`${config.apiBaseUrl}/menus`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const newMenu = await response.json();
-    thunkApi.dispatch(addMenu(newMenu));
+  async (options: CreateMenuOptions, thunkApi) => {
+    const { name, price, menuCategoryIds, onSuccess, onError } = options;
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/menus`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ name, price, menuCategoryIds }),
+      });
+      const { newMenu, newMenuCategoryMenus } = await response.json();
+      thunkApi.dispatch(addMenu(newMenu));
+      thunkApi.dispatch(addMenuCategoryMenus(newMenuCategoryMenus));
+      onSuccess && onSuccess();
+    } catch (error) {
+      onError && onError();
+    }
   }
 );
 
-// export const updateMenuThunk = createAsyncThunk(
-//   "menu/updateMenuThunk",
-//   async (payload, thunkApi) => {
-//     const { id, name, price } = payload;
-//     const response = await fetch(`${config.apiBaseUrl}/menus/${id}`, {
-//       method: "PUT",
-//       headers: { "content-type": "application/json" },
-//       body: JSON.stringify({ name, price }),
-//     });
-//     const updatedMenu = await response.json();
-//     thunkApi.dispatch(updateMenu(updatedMenu));
-//   }
-// );
+export const updateMenuThunk = createAsyncThunk(
+  "menu/updateMenuThunk",
+  async (options: UpdateMenuOptions, thunkApi) => {
+    const { id, name, price, menuCategoryIds, onSuccess, onError } = options;
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/menus`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id, name, price, menuCategoryIds }),
+      });
+      const { updatedMenu, createdMenuCategoryMenus } = await response.json();
+      thunkApi.dispatch(replaceMenu(updatedMenu));
+      thunkApi.dispatch(replaceMenuCategoryMenus(createdMenuCategoryMenus));
+      onSuccess && onSuccess();
+    } catch (error) {
+      onError && onError();
+    }
+  }
+);
 
-// export const deleteMenuThunk = createAsyncThunk(
-//   "menu/deleteMenuThunk",
-//   async (payload: number, thunkApi) => {
-//     await fetch(`${config.apiBaseUrl}/menus/${payload}`, {
-//       method: "DELETE",
-//     });
-//     thunkApi.dispatch(deleteMenu(payload));
-//   }
-// );
+export const deleteMenuThunk = createAsyncThunk(
+  "menu/deleteMenuThunk",
+  async (options: DeleteMenuOptions, thunkApi) => {
+    const { id, onSuccess, onError } = options;
+    try {
+      await fetch(`${config.apiBaseUrl}/menus?id=${id}`, {
+        method: "DELETE",
+      });
+      thunkApi.dispatch(deleteMenu({ id }));
+      onSuccess && onSuccess();
+    } catch (error) {
+      onError && onError();
+    }
+  }
+);
 
 export const menuSlice = createSlice({
   name: "menu",
@@ -81,11 +110,9 @@ export const menuSlice = createSlice({
     addMenu: (state, action) => {
       state.items = [...state.items, action.payload];
     },
-    updateMenu: (state, action) => {
+    replaceMenu: (state, action) => {
       state.items = state.items.map((item) =>
-        item.id === action.payload.id
-          ? { ...item, name: action.payload.name, price: action.payload.price }
-          : item
+        item.id === action.payload.id ? action.payload : item
       );
     },
     deleteMenu: (state, action) => {
@@ -94,6 +121,6 @@ export const menuSlice = createSlice({
   },
 });
 
-export const { setMenus, addMenu, updateMenu, deleteMenu } = menuSlice.actions;
+export const { setMenus, addMenu, replaceMenu, deleteMenu } = menuSlice.actions;
 
 export default menuSlice.reducer;

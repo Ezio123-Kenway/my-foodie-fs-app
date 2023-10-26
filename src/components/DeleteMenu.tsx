@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/router";
 import { deleteMenuThunk } from "@/store/slices/menuSlice";
+import { setOpenSnackBar } from "@/store/slices/snackBarSlice";
 
 interface Props {
   menuId: number;
@@ -15,9 +16,13 @@ export const DeleteMenu = ({ open, setOpen, menuId }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const handleDeleteMenu = () => {
-    dispatch(deleteMenuThunk(menuId));
+  const onSuccess = () => {
     router.push("/backoffice/menus");
+    dispatch(setOpenSnackBar({ message: "Deleted menu successfully.." }));
+  };
+
+  const handleDeleteMenu = () => {
+    dispatch(deleteMenuThunk({ id: menuId, onSuccess }));
   };
 
   return (
