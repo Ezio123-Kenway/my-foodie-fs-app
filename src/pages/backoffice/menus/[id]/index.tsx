@@ -1,6 +1,7 @@
 import { DeleteMenu } from "@/components/DeleteMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { updateMenuThunk } from "@/store/slices/menuSlice";
+import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import { UpdateMenuOptions } from "@/types/menu";
 // import { deleteMenuThunk, updateMenuThunk } from "@/store/slices/menuSlice";
 import {
@@ -67,6 +68,9 @@ const MenuDetailPage = () => {
 
   const onSuccess = () => {
     router.push("/backoffice/menus");
+    dispatch(
+      setOpenSnackbar({ message: "Updated addon category successfully.." })
+    );
   };
 
   const handleUpdateMenu = () => {

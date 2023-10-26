@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import menuReducer from "./slices/menuSlice";
 import addonReducer from "./slices/addonSlice";
 import addonCategoryReducer from "./slices/addonCategorySlice";
+import menuAddonCategoryReducer from "./slices/menuAddonCategorySlice";
 import locationReducer from "./slices/locationSlice";
 import menuCategoryReducer from "./slices/menuCategorySlice";
 import menuCategoryMenuReducer from "./slices/menuCategoryMenuSlice";
 import tableReducer from "./slices/tableSlice";
 import appReducer from "./slices/appSlice";
+import snackBarReducer from "./slices/snackBarSlice";
 // ...
 
 export const store = configureStore({
@@ -16,9 +18,11 @@ export const store = configureStore({
     menuCategory: menuCategoryReducer,
     menuCategoryMenu: menuCategoryMenuReducer,
     addonCategory: addonCategoryReducer,
+    menuAddonCategory: menuAddonCategoryReducer,
     addon: addonReducer,
     location: locationReducer,
     table: tableReducer,
+    snackBar: snackBarReducer,
   },
 });
 
