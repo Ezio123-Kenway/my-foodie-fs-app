@@ -11,6 +11,7 @@ import {
   addMenuCategoryMenus,
   replaceMenuCategoryMenus,
 } from "./menuCategoryMenuSlice";
+import { removeMenuAddonCategoriesByMenuId } from "./menuAddonCategorySlice";
 
 const initialState: MenuSliceState = {
   items: [],
@@ -93,6 +94,7 @@ export const deleteMenuThunk = createAsyncThunk(
         method: "DELETE",
       });
       thunkApi.dispatch(deleteMenu({ id }));
+      // thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({id}))
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

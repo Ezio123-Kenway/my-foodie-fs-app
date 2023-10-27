@@ -4,7 +4,7 @@ export interface AppSliceState {
   error: Error | null;
 }
 
-interface BaseOptions {
+export interface BaseOptions {
   onSuccess?: (data?: any) => void;
   onError?: (data?: any) => void;
 }

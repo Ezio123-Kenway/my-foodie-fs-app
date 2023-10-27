@@ -8,8 +8,10 @@ import { config } from "@/utils/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuAddonCategories,
+  removeMenuAddonCategoriesByAddonCategoryId,
   replaceMenuAddonCategories,
 } from "./menuAddonCategorySlice";
+import { removeAddons } from "./addonSlice";
 
 const initialState: AddonCategorySliceState = {
   items: [],
@@ -63,10 +65,15 @@ export const deleteAddonCategoryThunk = createAsyncThunk(
   async (options: DeleteAddonCategoryOptions, thunkApi) => {
     const { id, onSuccess, onError } = options;
     try {
-      await fetch(`${config.apiBaseUrl}/addon-categories?id=${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${config.apiBaseUrl}/addon-categories?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       thunkApi.dispatch(deleteAddonCategory({ id }));
+      // thunkApi.dispatch(removeMenuAddonCategoriesByAddonCategoryId({ id }));
+      thunkApi.dispatch(removeAddons({ id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

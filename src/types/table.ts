@@ -1,4 +1,5 @@
 import { Table } from "@prisma/client";
+import { BaseOptions } from "./app";
 
 export interface TableSliceState {
   items: Table[];
@@ -6,7 +7,17 @@ export interface TableSliceState {
   error: Error | null;
 }
 
-interface BaseOptions {
-  onSuccess?: (data?: any) => void;
-  onError?: (data?: any) => void;
+export interface CreateTableOptions extends BaseOptions {
+  name: string;
+  locationId: number | undefined;
+}
+
+export interface UpdateTableOptions extends BaseOptions {
+  id: number;
+  name: string;
+  locationId: number | undefined;
+}
+
+export interface DeleteTableOptions extends BaseOptions {
+  id: number;
 }

@@ -136,12 +136,12 @@ export default async function handler(
 
     // 6 find addons
     const addons = await prisma.addon.findMany({
-      where: { addonCategoryId: { in: addonCategoryIds } },
+      where: { addonCategoryId: { in: addonCategoryIds }, isArchived: false },
     });
 
     // 7 find tables
     const tables = await prisma.table.findMany({
-      where: { locationId: { in: locationIds } },
+      where: { locationId: { in: locationIds }, isArchived: false },
     });
 
     // 8 response all founded data

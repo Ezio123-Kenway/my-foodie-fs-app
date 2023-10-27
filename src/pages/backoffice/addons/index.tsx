@@ -1,11 +1,14 @@
+import { ItemCard } from "@/components/ItemCard";
 import { NewAddon } from "@/components/NewAddon";
 import { useAppSelector } from "@/store/hooks";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
+import EggIcon from "@mui/icons-material/Egg";
 
 const AddonsPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const addons = useAppSelector((state) => state.addon.items);
+  console.log("addons: ", addons);
 
   return (
     <Box>
@@ -18,9 +21,16 @@ const AddonsPage = () => {
           Create addon
         </Button>
       </Box>
-      {addons.map((addon) => (
-        <Typography key={addon.id}>{addon.name}</Typography>
-      ))}
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        {addons.map((addon) => (
+          <ItemCard
+            href={`/backoffice/addons/${addon.id}`}
+            key={addon.id}
+            title={addon.name}
+            icon={<EggIcon />}
+          />
+        ))}
+      </Box>
       <NewAddon open={open} setOpen={setOpen} />
     </Box>
   );

@@ -60,6 +60,14 @@ export default async function handler(
       where: { id: menuId },
     });
     if (!menuToUpdate) return res.status(400).send("Bad request");
+    await prisma.menuAddonCategory.updateMany({
+      where: { menuId },
+      data: { isArchived: true },
+    });
+    await prisma.menuCategoryMenu.updateMany({
+      where: { menuId },
+      data: { isArchived: true },
+    });
     await prisma.menu.update({
       where: { id: menuId },
       data: { isArchived: true },
