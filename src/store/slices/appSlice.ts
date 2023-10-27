@@ -8,6 +8,7 @@ import { setMenus } from "./menuSlice";
 import { setAddons } from "./addonSlice";
 import { setTables } from "./tableSlice";
 import { setMenuCategoryMenus } from "./menuCategoryMenuSlice";
+import { setMenuAddonCategories } from "./menuAddonCategorySlice";
 
 const initialState: AppSliceState = {
   init: false,
@@ -38,6 +39,7 @@ export const fetchAppData = createAsyncThunk(
       thunkApi.dispatch(setMenus(menus));
       thunkApi.dispatch(setMenuCategoryMenus(menuCategoryMenus));
       thunkApi.dispatch(setAddonCategories(addonCategories));
+      thunkApi.dispatch(setMenuAddonCategories(menuAddonCategories));
       thunkApi.dispatch(setAddons(addons));
       thunkApi.dispatch(setTables(tables));
       onSuccess && onSuccess();

@@ -1,7 +1,9 @@
+import { ItemCard } from "@/components/ItemCard";
 import { NewAddonCategory } from "@/components/NewAddonCategory";
 import { useAppSelector } from "@/store/hooks";
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
+import ClassIcon from "@mui/icons-material/Class";
 
 const AddonCategoriesPage = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -18,9 +20,16 @@ const AddonCategoriesPage = () => {
           Create addon category
         </Button>
       </Box>
-      {addonCategories.map((addonCategory) => (
-        <Typography key={addonCategory.id}>{addonCategory.name}</Typography>
-      ))}
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        {addonCategories.map((addonCategory) => (
+          <ItemCard
+            key={addonCategory.id}
+            title={addonCategory.name}
+            icon={<ClassIcon />}
+            href={`addon-categories/${addonCategory.id}`}
+          />
+        ))}
+      </Box>
       <NewAddonCategory open={open} setOpen={setOpen} />
     </Box>
   );
