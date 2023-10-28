@@ -1,28 +1,28 @@
 import { useAppDispatch } from "@/store/hooks";
+import { deleteLocation } from "@/store/slices/locationSlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import { Dialog, Box, DialogContent, Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { deleteAddon } from "@/store/slices/addonSlice";
 
 interface Props {
-  addonId: number;
+  locationId: number;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
+export const DeleteLocation = ({ locationId, open, setOpen }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const onSuccess = () => {
-    router.push("/backoffice/addons");
-    dispatch(setOpenSnackbar({ message: "Deleted addon successfully.." }));
+    router.push("/backoffice/locations");
+    dispatch(setOpenSnackbar({ message: "Deleted location successfully.." }));
   };
 
-  const handleDeleteAddon = () => {
-    dispatch(deleteAddon({ id: addonId, onSuccess }));
+  const handleDeleteLocation = () => {
+    dispatch(deleteLocation({ id: locationId, onSuccess }));
   };
 
   return (
@@ -36,7 +36,7 @@ export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
       </Box>
       <DialogContent>
         <Typography variant="h6">
-          Are you sure that you want to delete this addon?
+          Are you sure that you want to delete this location?
         </Typography>
       </DialogContent>
       <Box
@@ -54,7 +54,7 @@ export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
           variant="contained"
           sx={{ width: "fit-content" }}
           color="primary"
-          onClick={handleDeleteAddon}
+          onClick={handleDeleteLocation}
         >
           Confirm
         </Button>

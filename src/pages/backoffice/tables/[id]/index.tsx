@@ -1,4 +1,3 @@
-import { DeleteMenu } from "@/components/DeleteMenu";
 import { DeleteTable } from "@/components/DeleteTable";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";

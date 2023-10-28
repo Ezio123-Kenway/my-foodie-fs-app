@@ -102,7 +102,7 @@ export default async function handler(
 
     // 2. find locations
     const locations = await prisma.location.findMany({
-      where: { companyId },
+      where: { companyId, isArchived: false },
     });
     const locationIds = locations.map((location) => location.id);
 
@@ -116,7 +116,7 @@ export default async function handler(
 
     // 4 find menus
     const menuCategoryMenus = await prisma.menuCategoryMenu.findMany({
-      where: { menuCategoryId: { in: menuCategoryIds } },
+      where: { menuCategoryId: { in: menuCategoryIds }, isArchived: false },
     });
     const menuIds = menuCategoryMenus.map((item) => item.menuId);
     const menus = await prisma.menu.findMany({
@@ -125,7 +125,7 @@ export default async function handler(
 
     // 5 find addonCategories
     const menuAddonCategories = await prisma.menuAddonCategory.findMany({
-      where: { menuId: { in: menuIds } },
+      where: { menuId: { in: menuIds }, isArchived: false },
     });
     const addonCategoryIds = menuAddonCategories.map(
       (element) => element.addonCategoryId

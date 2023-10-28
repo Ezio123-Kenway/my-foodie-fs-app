@@ -8,6 +8,7 @@ import { ItemCard } from "@/components/ItemCard";
 const AddonCategoriesPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const addonCategories = useAppSelector((state) => state.addonCategory.items);
+  console.log("addonCategories: ", addonCategories);
 
   return (
     <Box>

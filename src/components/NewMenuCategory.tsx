@@ -1,5 +1,6 @@
 import { useAppDispatch } from "@/store/hooks";
 import { createMenuCategory } from "@/store/slices/menuCategorySlice";
+import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import {
   Box,
   Button,
@@ -21,6 +22,9 @@ export const NewMenuCategory = ({ open, setOpen }: Props) => {
 
   const onSuccess = () => {
     setOpen(false);
+    dispatch(
+      setOpenSnackbar({ message: "Created new menu category successfully.." })
+    );
   };
 
   const handleCreateMenuCategory = () => {
@@ -34,16 +38,16 @@ export const NewMenuCategory = ({ open, setOpen }: Props) => {
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>Create new menu category</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", width: 300 }}>
           <TextField
             variant="outlined"
             autoFocus
             label="Name"
             defaultValue={""}
-            sx={{ mb: 3, mt: 2 }}
+            sx={{ mb: 3, mt: 2, width: "100%" }}
             onChange={(evt) => setName(evt.target.value)}
           ></TextField>
         </Box>

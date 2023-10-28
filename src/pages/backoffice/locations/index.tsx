@@ -20,13 +20,16 @@ const LocationsPage = () => {
         </Button>
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {locations.map((location) => (
-          <ItemCard
-            key={location.id}
-            title={location.name}
-            icon={<LocationOnIcon />}
-          />
-        ))}
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          {locations.map((location) => (
+            <ItemCard
+              href={`/backoffice/locations/${location.id}`}
+              key={location.id}
+              title={location.name}
+              icon={<LocationOnIcon />}
+            />
+          ))}
+        </Box>
       </Box>
       <NewLocation open={open} setOpen={setOpen} />
     </Box>

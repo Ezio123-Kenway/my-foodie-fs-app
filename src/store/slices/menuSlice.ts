@@ -9,6 +9,7 @@ import { config } from "@/utils/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuCategoryMenus,
+  removeMenuCategoryMenusByMenuId,
   replaceMenuCategoryMenus,
 } from "./menuCategoryMenuSlice";
 import { removeMenuAddonCategoriesByMenuId } from "./menuAddonCategorySlice";
@@ -94,7 +95,8 @@ export const deleteMenuThunk = createAsyncThunk(
         method: "DELETE",
       });
       thunkApi.dispatch(deleteMenu({ id }));
-      // thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({id}))
+      thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ id }));
+      thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

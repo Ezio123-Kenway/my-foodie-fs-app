@@ -12,6 +12,7 @@ const MenusPage = () => {
   const { data } = useSession();
   const [open, setOpen] = useState<boolean>(false);
   const menus = useAppSelector((state) => state.menu.items);
+  console.log("menus: ", menus);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

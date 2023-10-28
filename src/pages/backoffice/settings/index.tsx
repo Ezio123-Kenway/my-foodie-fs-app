@@ -25,8 +25,9 @@ const SettingsPage = () => {
       if (selectedLocationId) {
         setSelectedLocationId(selectedLocationId);
       } else {
-        const firstLocationId = locations[0].id;
-        setSelectedLocationId(String(firstLocationId));
+        const firstLocationId = String(locations[0].id);
+        setSelectedLocationId(firstLocationId);
+        localStorage.setItem("selectedLocationId", firstLocationId);
       }
     }
   }, [locations]);

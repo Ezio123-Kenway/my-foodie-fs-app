@@ -1,28 +1,34 @@
 import { useAppDispatch } from "@/store/hooks";
-import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
-import { Dialog, Box, DialogContent, Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { deleteAddon } from "@/store/slices/addonSlice";
+import { Dialog, Box, DialogContent, Typography, Button } from "@mui/material";
+import { deleteMenuCategory } from "@/store/slices/menuCategorySlice";
+import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 
 interface Props {
-  addonId: number;
+  menuCategoryId: number;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
+export const DeleteMenuCategory = ({
+  menuCategoryId,
+  open,
+  setOpen,
+}: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const onSuccess = () => {
-    router.push("/backoffice/addons");
-    dispatch(setOpenSnackbar({ message: "Deleted addon successfully.." }));
+    router.push("/backoffice/menu-categories");
+    dispatch(
+      setOpenSnackbar({ message: "Deleted menu category successfully.." })
+    );
   };
 
-  const handleDeleteAddon = () => {
-    dispatch(deleteAddon({ id: addonId, onSuccess }));
+  const handleDeleteMenuCategory = () => {
+    dispatch(deleteMenuCategory({ id: menuCategoryId, onSuccess }));
   };
 
   return (
@@ -36,7 +42,7 @@ export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
       </Box>
       <DialogContent>
         <Typography variant="h6">
-          Are you sure that you want to delete this addon?
+          Are you sure that you want to delete this menu category?
         </Typography>
       </DialogContent>
       <Box
@@ -54,7 +60,7 @@ export const DeleteAddon = ({ addonId, open, setOpen }: Props) => {
           variant="contained"
           sx={{ width: "fit-content" }}
           color="primary"
-          onClick={handleDeleteAddon}
+          onClick={handleDeleteMenuCategory}
         >
           Confirm
         </Button>

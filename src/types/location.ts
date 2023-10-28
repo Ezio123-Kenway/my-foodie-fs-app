@@ -1,4 +1,5 @@
 import { Location } from "@prisma/client";
+import { BaseOptions } from "./app";
 
 export interface LocationSliceState {
   items: Location[];
@@ -6,7 +7,19 @@ export interface LocationSliceState {
   error: Error | null;
 }
 
-interface BaseOptions {
-  onSuccess?: (data?: any) => void;
-  onError?: (data?: any) => void;
+export interface CreateLocationOptions extends BaseOptions {
+  name: string;
+  address: string;
+  companyId: number | undefined;
+}
+
+export interface UpdateLocationOptions extends BaseOptions {
+  id: number;
+  name: string;
+  address: string;
+  companyId: number | undefined;
+}
+
+export interface DeleteLocationOptions extends BaseOptions {
+  id: number;
 }

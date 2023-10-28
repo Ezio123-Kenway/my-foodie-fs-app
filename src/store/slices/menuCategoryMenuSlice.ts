@@ -1,5 +1,5 @@
 import { MenuCategoryMenuSlice } from "@/types/menuCategoryMenu";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState: MenuCategoryMenuSlice = {
   items: [],
@@ -24,6 +24,22 @@ export const menuCategoryMenuSlice = createSlice({
       );
       state.items = [...otherMenuCategoryMenus, ...action.payload];
     },
+    removeMenuCategoryMenusByMenuCategoryId: (
+      state,
+      action: PayloadAction<{ id: number }>
+    ) => {
+      state.items = state.items.filter(
+        (item) => item.menuCategoryId !== action.payload.id
+      );
+    },
+    removeMenuCategoryMenusByMenuId: (
+      state,
+      action: PayloadAction<{ id: number }>
+    ) => {
+      state.items = state.items.filter(
+        (item) => item.menuId !== action.payload.id
+      );
+    },
   },
 });
 
@@ -31,6 +47,8 @@ export const {
   setMenuCategoryMenus,
   addMenuCategoryMenus,
   replaceMenuCategoryMenus,
+  removeMenuCategoryMenusByMenuCategoryId,
+  removeMenuCategoryMenusByMenuId,
 } = menuCategoryMenuSlice.actions;
 
 export default menuCategoryMenuSlice.reducer;

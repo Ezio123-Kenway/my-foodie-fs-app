@@ -19,11 +19,40 @@ export default async function handler(
       where: { id: locationId },
     });
     if (!location) return res.status(400).send("Bad request");
-    const { companyId } = location;
+    const companyId = location.companyId;
     const newMenuCategory = await prisma.menuCategory.create({
       data: { name, companyId },
     });
-    return res.status(200).json(newMenuCategory);
+    return res.status(200).json({ newMenuCategory });
+  } else if (method === "PUT") {
+    const { id, name } = req.body;
+    const isValid = id && name;
+    if (!isValid) return res.status(400).send("Bad request");
+    const menuCategoryToUpdate = await prisma.menuCategory.findUnique({
+      where: { id },
+    });
+    if (!menuCategoryToUpdate) return res.status(400).send("Bad request");
+    const updatedMenuCategory = await prisma.menuCategory.update({
+      where: { id },
+      data: { name },
+    });
+    return res.status(200).json({ updatedMenuCategory });
+  } else if (method === "DELETE") {
+    const menuCategoryId = Number(req.query.id);
+    if (!menuCategoryId) return res.status(400).send("Bad request");
+    const menuCategoryToDelete = await prisma.menuCategory.findUnique({
+      where: { id: menuCategoryId },
+    });
+    if (!menuCategoryToDelete) return res.status(400).send("Bad request");
+    await prisma.menuCategoryMenu.updateMany({
+      where: { menuCategoryId },
+      data: { isArchived: true },
+    });
+    await prisma.menuCategory.update({
+      where: { id: menuCategoryId },
+      data: { isArchived: true },
+    });
+    return res.status(200).json("Deleted");
   }
   res.status(405).send("Invalid method");
 }

@@ -72,7 +72,7 @@ export const deleteAddonCategoryThunk = createAsyncThunk(
         }
       );
       thunkApi.dispatch(deleteAddonCategory({ id }));
-      // thunkApi.dispatch(removeMenuAddonCategoriesByAddonCategoryId({ id }));
+      thunkApi.dispatch(removeMenuAddonCategoriesByAddonCategoryId({ id }));
       thunkApi.dispatch(removeAddons({ id }));
       onSuccess && onSuccess();
     } catch (error) {
