@@ -8,6 +8,9 @@ import { config } from "@/utils/config";
 import { MenuCategory } from "@prisma/client";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { removeMenuCategoryMenusByMenuCategoryId } from "./menuCategoryMenuSlice";
+import { removeMenus } from "./menuSlice";
+import { removeAddonCategories } from "./addonCategorySlice";
+import { removeAddonsByAddonCategoryIds } from "./addonSlice";
 
 const initialState: MenuCategorySliceState = {
   items: [],
@@ -58,11 +61,26 @@ export const deleteMenuCategory = createAsyncThunk(
   async (options: DeleteMenuCategoryOptions, thunkApi) => {
     const { id, onSuccess, onError } = options;
     try {
-      await fetch(`${config.apiBaseUrl}/menu-categories?id=${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${config.apiBaseUrl}/menu-categories?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const { menuIdsToDelete, addonCategoryIdsToDelete } =
+        await response.json();
       thunkApi.dispatch(removeMenuCategory({ id }));
       thunkApi.dispatch(removeMenuCategoryMenusByMenuCategoryId({ id }));
+      menuIdsToDelete.length > 0 &&
+        thunkApi.dispatch(removeMenus({ ids: menuIdsToDelete }));
+      addonCategoryIdsToDelete.length > 0 &&
+        thunkApi.dispatch(
+          removeAddonCategories({ ids: addonCategoryIdsToDelete })
+        );
+      addonCategoryIdsToDelete.length > 0 &&
+        thunkApi.dispatch(
+          removeAddonsByAddonCategoryIds({ ids: addonCategoryIdsToDelete })
+        );
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

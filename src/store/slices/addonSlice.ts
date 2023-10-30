@@ -93,10 +93,24 @@ export const AddonSlice = createSlice({
         (item) => item.addonCategoryId !== action.payload.id
       );
     },
+    removeAddonsByAddonCategoryIds: (
+      state,
+      action: PayloadAction<{ ids: number[] }>
+    ) => {
+      state.items = state.items.filter(
+        (item) => !action.payload.ids.includes(item.addonCategoryId)
+      );
+    },
   },
 });
 
-export const { setAddons, addAddon, replaceAddon, removeAddon, removeAddons } =
-  AddonSlice.actions;
+export const {
+  setAddons,
+  addAddon,
+  replaceAddon,
+  removeAddon,
+  removeAddons,
+  removeAddonsByAddonCategoryIds,
+} = AddonSlice.actions;
 
 export default AddonSlice.reducer;

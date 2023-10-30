@@ -6,13 +6,15 @@ import {
   UpdateMenuOptions,
 } from "@/types/menu";
 import { config } from "@/utils/config";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuCategoryMenus,
   removeMenuCategoryMenusByMenuId,
   replaceMenuCategoryMenus,
 } from "./menuCategoryMenuSlice";
 import { removeMenuAddonCategoriesByMenuId } from "./menuAddonCategorySlice";
+import { Menu } from "@prisma/client";
+import { stat } from "fs";
 
 const initialState: MenuSliceState = {
   items: [],
@@ -122,23 +124,29 @@ export const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    setMenus: (state, action) => {
+    setMenus: (state, action: PayloadAction<Menu[]>) => {
       state.items = action.payload;
     },
-    addMenu: (state, action) => {
+    addMenu: (state, action: PayloadAction<Menu>) => {
       state.items = [...state.items, action.payload];
     },
-    replaceMenu: (state, action) => {
+    replaceMenu: (state, action: PayloadAction<Menu>) => {
       state.items = state.items.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
     },
-    deleteMenu: (state, action) => {
+    deleteMenu: (state, action: PayloadAction<{ id: number }>) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
+    },
+    removeMenus: (state, action: PayloadAction<{ ids: number[] }>) => {
+      state.items = state.items.filter(
+        (item) => !action.payload.ids.includes(item.id)
+      );
     },
   },
 });
 
-export const { setMenus, addMenu, replaceMenu, deleteMenu } = menuSlice.actions;
+export const { setMenus, addMenu, replaceMenu, deleteMenu, removeMenus } =
+  menuSlice.actions;
 
 export default menuSlice.reducer;

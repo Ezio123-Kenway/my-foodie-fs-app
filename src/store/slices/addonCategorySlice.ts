@@ -5,13 +5,14 @@ import {
   UpdateAddonCategoryOptions,
 } from "@/types/addonCategory";
 import { config } from "@/utils/config";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuAddonCategories,
   removeMenuAddonCategoriesByAddonCategoryId,
   replaceMenuAddonCategories,
 } from "./menuAddonCategorySlice";
 import { removeAddons } from "./addonSlice";
+import { AddonCategory } from "@prisma/client";
 
 const initialState: AddonCategorySliceState = {
   items: [],
@@ -85,19 +86,27 @@ export const AddonCategorySlice = createSlice({
   name: "addonCategory",
   initialState,
   reducers: {
-    setAddonCategories: (state, action) => {
+    setAddonCategories: (state, action: PayloadAction<AddonCategory[]>) => {
       state.items = action.payload;
     },
-    addAddonCategory: (state, action) => {
+    addAddonCategory: (state, action: PayloadAction<AddonCategory>) => {
       state.items = [...state.items, action.payload];
     },
-    replaceAddonCategory: (state, action) => {
+    replaceAddonCategory: (state, action: PayloadAction<AddonCategory>) => {
       state.items = state.items.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
     },
-    deleteAddonCategory: (state, action) => {
+    deleteAddonCategory: (state, action: PayloadAction<{ id: number }>) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
+    },
+    removeAddonCategories: (
+      state,
+      action: PayloadAction<{ ids: number[] }>
+    ) => {
+      state.items = state.items.filter(
+        (item) => !action.payload.ids.includes(item.id)
+      );
     },
   },
 });
@@ -107,6 +116,7 @@ export const {
   addAddonCategory,
   replaceAddonCategory,
   deleteAddonCategory,
+  removeAddonCategories,
 } = AddonCategorySlice.actions;
 
 export default AddonCategorySlice.reducer;
