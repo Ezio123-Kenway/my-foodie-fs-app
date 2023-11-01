@@ -108,7 +108,7 @@ export default async function handler(
 
     // 3. find menu categories
     const menuCategories = await prisma.menuCategory.findMany({
-      where: { companyId },
+      where: { companyId, isArchived: false },
     });
     const menuCategoryIds = menuCategories.map(
       (menuCategory) => menuCategory.id

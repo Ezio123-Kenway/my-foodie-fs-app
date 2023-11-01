@@ -62,7 +62,9 @@ export const deleteMenuCategory = createAsyncThunk(
         method: "DELETE",
       });
       thunkApi.dispatch(removeMenuCategory({ id }));
-      thunkApi.dispatch(removeMenuCategoryMenusByMenuCategoryId({ id }));
+      thunkApi.dispatch(
+        removeMenuCategoryMenusByMenuCategoryId({ menuCategoryId: id })
+      );
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

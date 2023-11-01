@@ -95,7 +95,7 @@ const LocationDetailPage = () => {
           color="primary"
           disabled={!canUpdate}
           onClick={handleUpdateLocation}
-          sx={{ mt: 3 }}
+          sx={{ mt: 3, width: "fit-content" }}
         >
           Update
         </Button>

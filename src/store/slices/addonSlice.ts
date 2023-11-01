@@ -88,15 +88,23 @@ export const AddonSlice = createSlice({
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
     // remove addons with related addonCategoryId
-    removeAddons: (state, action: PayloadAction<{ id: number }>) => {
+    removeAddonsByAddonCategoryId: (
+      state,
+      action: PayloadAction<{ addonCategoryId: number }>
+    ) => {
       state.items = state.items.filter(
-        (item) => item.addonCategoryId !== action.payload.id
+        (item) => item.addonCategoryId !== action.payload.addonCategoryId
       );
     },
   },
 });
 
-export const { setAddons, addAddon, replaceAddon, removeAddon, removeAddons } =
-  AddonSlice.actions;
+export const {
+  setAddons,
+  addAddon,
+  replaceAddon,
+  removeAddon,
+  removeAddonsByAddonCategoryId,
+} = AddonSlice.actions;
 
 export default AddonSlice.reducer;

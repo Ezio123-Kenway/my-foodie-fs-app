@@ -132,7 +132,7 @@ const AddonDetailPage = () => {
           color="primary"
           disabled={!canUpdate}
           onClick={handleUpdateAddon}
-          sx={{ mt: 3 }}
+          sx={{ mt: 3, width: "fit-content" }}
         >
           Update
         </Button>

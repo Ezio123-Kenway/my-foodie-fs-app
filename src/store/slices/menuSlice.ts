@@ -6,13 +6,14 @@ import {
   UpdateMenuOptions,
 } from "@/types/menu";
 import { config } from "@/utils/config";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuCategoryMenus,
   removeMenuCategoryMenusByMenuId,
   replaceMenuCategoryMenus,
 } from "./menuCategoryMenuSlice";
 import { removeMenuAddonCategoriesByMenuId } from "./menuAddonCategorySlice";
+import { Menu } from "@prisma/client";
 
 const initialState: MenuSliceState = {
   items: [],
@@ -22,29 +23,12 @@ const initialState: MenuSliceState = {
 
 // export const getMenus = createAsyncThunk(
 //   "menu/getMenus",
-//   async (options: GetMenusOptions, thunkApi) => {
-//     const { locationId, onSuccess, onError } = options;
-//     try {
-//       const response = await fetch(
-//         `${config.apiBaseUrl}/menu?locationId=${locationId}`
-//       );
-//       const menus = await response.json();
-//       thunkApi.dispatch(setMenus(menus));
-//       onSuccess && onSuccess();
-//     } catch (error) {
-//       onError && onError();
-//     }
+//   async (_, thunkApi) => {
+//     const response = await fetch(`${config.apiBaseUrl}/menus`);
+//     const menus = await response.json();
+//     thunkApi.dispatch(setMenus(menus));
 //   }
 // );
-
-export const getMenus = createAsyncThunk(
-  "menu/getMenus",
-  async (_, thunkApi) => {
-    const response = await fetch(`${config.apiBaseUrl}/menus`);
-    const menus = await response.json();
-    thunkApi.dispatch(setMenus(menus));
-  }
-);
 
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
@@ -66,8 +50,8 @@ export const createMenu = createAsyncThunk(
   }
 );
 
-export const updateMenuThunk = createAsyncThunk(
-  "menu/updateMenuThunk",
+export const updateMenu = createAsyncThunk(
+  "menu/updateMenu",
   async (options: UpdateMenuOptions, thunkApi) => {
     const { id, name, price, menuCategoryIds, onSuccess, onError } = options;
     try {
@@ -86,17 +70,17 @@ export const updateMenuThunk = createAsyncThunk(
   }
 );
 
-export const deleteMenuThunk = createAsyncThunk(
-  "menu/deleteMenuThunk",
+export const deleteMenu = createAsyncThunk(
+  "menu/deleteMenu",
   async (options: DeleteMenuOptions, thunkApi) => {
     const { id, onSuccess, onError } = options;
     try {
       await fetch(`${config.apiBaseUrl}/menus?id=${id}`, {
         method: "DELETE",
       });
-      thunkApi.dispatch(deleteMenu({ id }));
-      thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ id }));
-      thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ id }));
+      thunkApi.dispatch(removeMenu({ id }));
+      thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ menuId: id }));
+      thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ menuId: id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();
@@ -104,41 +88,27 @@ export const deleteMenuThunk = createAsyncThunk(
   }
 );
 
-// export const updateMenuThunk = createAsyncThunk(
-//   "menu/updateMenuThunk",
-//   async (payload, thunkApi) => {
-//     // const { id, name, price } = payload;
-//     const response = await fetch(`${config.apiBaseUrl}/menus`, {
-//       method: "PUT",
-//       headers: { "content-type": "application/json" },
-//       body: JSON.stringify({}),
-//     });
-//     const updatedMenu = await response.json();
-//     thunkApi.dispatch(updateMenu(updatedMenu));
-//   }
-// );
-
 export const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    setMenus: (state, action) => {
+    setMenus: (state, action: PayloadAction<Menu[]>) => {
       state.items = action.payload;
     },
-    addMenu: (state, action) => {
+    addMenu: (state, action: PayloadAction<Menu>) => {
       state.items = [...state.items, action.payload];
     },
-    replaceMenu: (state, action) => {
+    replaceMenu: (state, action: PayloadAction<Menu>) => {
       state.items = state.items.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
     },
-    deleteMenu: (state, action) => {
+    removeMenu: (state, action: PayloadAction<{ id: number }>) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
   },
 });
 
-export const { setMenus, addMenu, replaceMenu, deleteMenu } = menuSlice.actions;
+export const { setMenus, addMenu, replaceMenu, removeMenu } = menuSlice.actions;
 
 export default menuSlice.reducer;

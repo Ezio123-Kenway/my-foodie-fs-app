@@ -1,10 +1,12 @@
 import { Box, Button, Dialog, DialogContent, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dispatch, SetStateAction } from "react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/router";
-import { deleteMenuThunk } from "@/store/slices/menuSlice";
+import { deleteMenu } from "@/store/slices/menuSlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
+import { removeAddonCategory } from "@/store/slices/addonCategorySlice";
+import { removeAddonsByAddonCategoryId } from "@/store/slices/addonSlice";
 
 interface Props {
   menuId: number;
@@ -15,14 +17,30 @@ interface Props {
 export const DeleteMenu = ({ open, setOpen, menuId }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const menuAddonCategories = useAppSelector(
+    (state) => state.menuAddonCategory.items
+  );
 
   const onSuccess = () => {
     router.push("/backoffice/menus");
     dispatch(setOpenSnackbar({ message: "Deleted menu successfully.." }));
+    const addonCategoryIds = menuAddonCategories
+      .filter((item) => item.menuId === menuId)
+      .map((element) => element.addonCategoryId);
+    addonCategoryIds.forEach((addonCategoryId) => {
+      const menuAddonCategoryRows = menuAddonCategories.filter(
+        (innerItem) => innerItem.addonCategoryId === addonCategoryId
+      );
+      if (menuAddonCategoryRows.length === 1) {
+        // one addon-category is connected to only one menu
+        dispatch(removeAddonCategory({ id: addonCategoryId }));
+        dispatch(removeAddonsByAddonCategoryId({ addonCategoryId }));
+      }
+    });
   };
 
   const handleDeleteMenu = () => {
-    dispatch(deleteMenuThunk({ id: menuId, onSuccess }));
+    dispatch(deleteMenu({ id: menuId, onSuccess }));
   };
 
   return (

@@ -1,7 +1,7 @@
 import { DeleteAddonCategory } from "@/components/DeleteAddonCategory";
 import { DeleteMenu } from "@/components/DeleteMenu";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { updateAddonCategoryThunk } from "@/store/slices/addonCategorySlice";
+import { updateAddonCategory } from "@/store/slices/addonCategorySlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import { UpdateAddonCategoryOptions } from "@/types/addonCategory";
 import {
@@ -79,7 +79,7 @@ const AddonCategoryDetailPage = () => {
   };
 
   const handleUpdateAddonCategory = () => {
-    dispatch(updateAddonCategoryThunk({ ...updatedAddonCategory, onSuccess }));
+    dispatch(updateAddonCategory({ ...updatedAddonCategory, onSuccess }));
   };
 
   return (
@@ -155,7 +155,7 @@ const AddonCategoryDetailPage = () => {
           color="primary"
           disabled={!isValid}
           onClick={handleUpdateAddonCategory}
-          sx={{ mt: 3 }}
+          sx={{ mt: 3, width: "fit-content" }}
         >
           Update
         </Button>

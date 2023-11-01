@@ -5,13 +5,14 @@ import {
   UpdateAddonCategoryOptions,
 } from "@/types/addonCategory";
 import { config } from "@/utils/config";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addMenuAddonCategories,
   removeMenuAddonCategoriesByAddonCategoryId,
   replaceMenuAddonCategories,
 } from "./menuAddonCategorySlice";
-import { removeAddons } from "./addonSlice";
+import { removeAddonsByAddonCategoryId } from "./addonSlice";
+import { AddonCategory } from "@prisma/client";
 
 const initialState: AddonCategorySliceState = {
   items: [],
@@ -39,8 +40,8 @@ export const createAddonCategory = createAsyncThunk(
   }
 );
 
-export const updateAddonCategoryThunk = createAsyncThunk(
-  "addonCategory/updateAddonCategoryThunk",
+export const updateAddonCategory = createAsyncThunk(
+  "addonCategory/updateAddonCategory",
   async (options: UpdateAddonCategoryOptions, thunkApi) => {
     const { id, name, isRequired, menuIds, onSuccess, onError } = options;
     try {
@@ -60,20 +61,19 @@ export const updateAddonCategoryThunk = createAsyncThunk(
   }
 );
 
-export const deleteAddonCategoryThunk = createAsyncThunk(
-  "addonCategory/deleteAddonCategoryThunk",
+export const deleteAddonCategory = createAsyncThunk(
+  "addonCategory/deleteAddonCategory",
   async (options: DeleteAddonCategoryOptions, thunkApi) => {
     const { id, onSuccess, onError } = options;
     try {
-      const response = await fetch(
-        `${config.apiBaseUrl}/addon-categories?id=${id}`,
-        {
-          method: "DELETE",
-        }
+      await fetch(`${config.apiBaseUrl}/addon-categories?id=${id}`, {
+        method: "DELETE",
+      });
+      thunkApi.dispatch(removeAddonCategory({ id }));
+      thunkApi.dispatch(
+        removeMenuAddonCategoriesByAddonCategoryId({ addonCategoryId: id })
       );
-      thunkApi.dispatch(deleteAddonCategory({ id }));
-      thunkApi.dispatch(removeMenuAddonCategoriesByAddonCategoryId({ id }));
-      thunkApi.dispatch(removeAddons({ id }));
+      thunkApi.dispatch(removeAddonsByAddonCategoryId({ addonCategoryId: id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();
@@ -85,18 +85,18 @@ export const AddonCategorySlice = createSlice({
   name: "addonCategory",
   initialState,
   reducers: {
-    setAddonCategories: (state, action) => {
+    setAddonCategories: (state, action: PayloadAction<AddonCategory[]>) => {
       state.items = action.payload;
     },
-    addAddonCategory: (state, action) => {
+    addAddonCategory: (state, action: PayloadAction<AddonCategory>) => {
       state.items = [...state.items, action.payload];
     },
-    replaceAddonCategory: (state, action) => {
+    replaceAddonCategory: (state, action: PayloadAction<AddonCategory>) => {
       state.items = state.items.map((item) =>
         item.id === action.payload.id ? action.payload : item
       );
     },
-    deleteAddonCategory: (state, action) => {
+    removeAddonCategory: (state, action: PayloadAction<{ id: number }>) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
   },
@@ -106,7 +106,7 @@ export const {
   setAddonCategories,
   addAddonCategory,
   replaceAddonCategory,
-  deleteAddonCategory,
+  removeAddonCategory,
 } = AddonCategorySlice.actions;
 
 export default AddonCategorySlice.reducer;

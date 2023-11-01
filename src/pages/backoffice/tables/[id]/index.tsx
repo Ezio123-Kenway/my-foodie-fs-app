@@ -68,7 +68,7 @@ const TableDetailPage = () => {
           color="primary"
           disabled={!updatedTable.name}
           onClick={handleUpdateTable}
-          sx={{ mt: 3 }}
+          sx={{ mt: 3, width: "fit-content" }}
         >
           Update
         </Button>

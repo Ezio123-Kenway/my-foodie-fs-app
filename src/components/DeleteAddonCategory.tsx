@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAppDispatch } from "@/store/hooks";
 import { useRouter } from "next/router";
-import { deleteAddonCategoryThunk } from "@/store/slices/addonCategorySlice";
+import { deleteAddonCategory } from "@/store/slices/addonCategorySlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 
 interface Props {
@@ -28,7 +28,7 @@ export const DeleteAddonCategory = ({
   };
 
   const handleDeleteAddonCategory = () => {
-    dispatch(deleteAddonCategoryThunk({ id: addonCategoryId, onSuccess }));
+    dispatch(deleteAddonCategory({ id: addonCategoryId, onSuccess }));
   };
 
   return (
