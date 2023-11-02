@@ -9,7 +9,7 @@ import { ItemCard } from "@/components/ItemCard";
 const MenusPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const menus = useAppSelector((state) => state.menu.items);
-  console.log("menus: ", menus);
+  // console.log("menus: ", menus);
 
   return (
     <Box>

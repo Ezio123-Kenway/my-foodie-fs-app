@@ -61,10 +61,10 @@ export const deleteMenuCategory = createAsyncThunk(
       await fetch(`${config.apiBaseUrl}/menu-categories?id=${id}`, {
         method: "DELETE",
       });
-      thunkApi.dispatch(removeMenuCategory({ id }));
-      thunkApi.dispatch(
-        removeMenuCategoryMenusByMenuCategoryId({ menuCategoryId: id })
-      );
+      // thunkApi.dispatch(removeMenuCategory({ id }));
+      // thunkApi.dispatch(
+      //   removeMenuCategoryMenusByMenuCategoryId({ menuCategoryId: id })
+      // );
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

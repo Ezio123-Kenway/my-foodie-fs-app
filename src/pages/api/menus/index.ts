@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
 import { CreateMenuOptions, UpdateMenuOptions } from "@/types/menu";
+import { handleDeleteMenu } from "../handleDelete";
 
 export default async function handler(
   req: NextApiRequest,
@@ -60,18 +61,7 @@ export default async function handler(
       where: { id: menuId },
     });
     if (!menuToUpdate) return res.status(400).send("Bad request");
-    await prisma.menuAddonCategory.updateMany({
-      where: { menuId },
-      data: { isArchived: true },
-    });
-    await prisma.menuCategoryMenu.updateMany({
-      where: { menuId },
-      data: { isArchived: true },
-    });
-    await prisma.menu.update({
-      where: { id: menuId },
-      data: { isArchived: true },
-    });
+    handleDeleteMenu(menuId);
     return res.status(200).send("Deleted");
   }
   res.status(405).json("Invalid method");

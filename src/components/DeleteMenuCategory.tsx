@@ -9,6 +9,7 @@ import { removeMenu } from "@/store/slices/menuSlice";
 import { removeMenuAddonCategoriesByMenuId } from "@/store/slices/menuAddonCategorySlice";
 import { removeAddonCategory } from "@/store/slices/addonCategorySlice";
 import { removeAddonsByAddonCategoryId } from "@/store/slices/addonSlice";
+import { fetchAppData } from "@/store/slices/appSlice";
 
 interface Props {
   menuCategoryId: number;
@@ -23,45 +24,13 @@ export const DeleteMenuCategory = ({
 }: Props) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const menuCategoryMenus = useAppSelector(
-    (state) => state.menuCategoryMenu.items
-  );
-  const menuAddonCategories = useAppSelector(
-    (state) => state.menuAddonCategory.items
-  );
 
   const onSuccess = () => {
+    dispatch(fetchAppData({}));
     router.push("/backoffice/menu-categories");
     dispatch(
       setOpenSnackbar({ message: "Deleted menu category successfully.." })
     );
-    const menuIds = menuCategoryMenus
-      .filter((item) => item.menuCategoryId === menuCategoryId)
-      .map((element) => element.menuId);
-    menuIds.forEach((menuId) => {
-      const menuCategoryMenuRows = menuCategoryMenus.filter(
-        (innerItem) => innerItem.menuId === menuId
-      );
-      if (menuCategoryMenuRows.length === 1) {
-        // one menu is connected to only one menu-category
-        dispatch(removeMenu({ id: menuId }));
-        dispatch(removeMenuAddonCategoriesByMenuId({ menuId }));
-
-        const addonCategoryIds = menuAddonCategories
-          .filter((item) => item.menuId === menuId)
-          .map((element) => element.addonCategoryId);
-        addonCategoryIds.forEach((addonCategoryId) => {
-          const menuAddonCategoryRows = menuAddonCategories.filter(
-            (innerItem) => innerItem.addonCategoryId === addonCategoryId
-          );
-          if (menuAddonCategoryRows.length === 1) {
-            // one addon-category is connected to only one menu
-            dispatch(removeAddonCategory({ id: addonCategoryId }));
-            dispatch(removeAddonsByAddonCategoryId({ addonCategoryId }));
-          }
-        });
-      }
-    });
   };
 
   const handleDeleteMenuCategory = () => {

@@ -78,9 +78,9 @@ export const deleteMenu = createAsyncThunk(
       await fetch(`${config.apiBaseUrl}/menus?id=${id}`, {
         method: "DELETE",
       });
-      thunkApi.dispatch(removeMenu({ id }));
-      thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ menuId: id }));
-      thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ menuId: id }));
+      // thunkApi.dispatch(removeMenu({ id }));
+      // thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ menuId: id }));
+      // thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ menuId: id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

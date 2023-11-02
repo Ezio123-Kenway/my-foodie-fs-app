@@ -16,7 +16,6 @@ const menuCategoryDetailPage = () => {
   const router = useRouter();
   const menuCategoryId = Number(router.query.id);
   const menuCategories = useAppSelector((state) => state.menuCategory.items);
-  console.log("menuCategories: ", menuCategories);
   const menuCategory = menuCategories.find(
     (item) => item.id === menuCategoryId
   );
