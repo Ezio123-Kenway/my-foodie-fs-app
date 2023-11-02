@@ -51,29 +51,37 @@ export const handleDeleteMenuCategory = async (menuCategoryId: number) => {
   const joinedMenu = await prisma.menuCategoryMenu.findMany({
     where: { menuCategoryId },
   });
-  const menuIds = joinedMenu.map((item) => item.menuId);
+  if (joinedMenu.length) {
+    const menuIds = joinedMenu.map((item) => item.menuId);
 
-  menuIds.forEach(async (menuId) => {
-    const menuCategoryMenuRows = await prisma.menuCategoryMenu.findMany({
-      where: { menuId, isArchived: false },
-    });
-    console.log("MenuCategoryMenuRows: ", menuCategoryMenuRows);
-    const canDeleteMenu = menuCategoryMenuRows.length === 1 ? true : false;
-    console.log("canDeleteMenu: ", canDeleteMenu);
-    if (canDeleteMenu) {
-      console.log("Inside delete..");
-      handleDeleteMenu(menuId);
-    }
+    menuIds.forEach(async (menuId) => {
+      const menuCategoryMenuRows = await prisma.menuCategoryMenu.findMany({
+        where: { menuId, isArchived: false },
+      });
+      console.log("MenuCategoryMenuRows: ", menuCategoryMenuRows);
+      const canDeleteMenu = menuCategoryMenuRows.length === 1 ? true : false;
+      console.log("canDeleteMenu: ", canDeleteMenu);
+      if (canDeleteMenu) {
+        console.log("Inside delete..");
+        handleDeleteMenu(menuId);
+      }
 
-    await prisma.menuCategoryMenu.updateMany({
-      where: { menuCategoryId, menuId },
-      data: { isArchived: true },
+      await prisma.menuCategoryMenu.updateMany({
+        where: { menuCategoryId, menuId },
+        data: { isArchived: true },
+      });
+      await prisma.menuCategory.update({
+        where: { id: menuCategoryId },
+        data: { isArchived: true },
+      });
     });
+  } else {
+    // the menu-category has no menu connected to it.
     await prisma.menuCategory.update({
       where: { id: menuCategoryId },
       data: { isArchived: true },
     });
-  });
+  }
 };
 
 // export const handleMenuCategory = async (menuCategoryId: number) => {

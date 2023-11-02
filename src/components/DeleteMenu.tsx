@@ -20,9 +20,14 @@ export const DeleteMenu = ({ open, setOpen, menuId }: Props) => {
   const router = useRouter();
 
   const onSuccess = () => {
-    dispatch(fetchAppData({}));
-    router.push("/backoffice/menus");
-    dispatch(setOpenSnackbar({ message: "Deleted menu successfully.." }));
+    dispatch(
+      fetchAppData({
+        onSuccess: () => {
+          router.push("/backoffice/menus");
+          dispatch(setOpenSnackbar({ message: "Deleted menu successfully.." }));
+        },
+      })
+    );
   };
 
   const handleDeleteMenu = () => {

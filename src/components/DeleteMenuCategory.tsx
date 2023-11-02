@@ -26,10 +26,15 @@ export const DeleteMenuCategory = ({
   const router = useRouter();
 
   const onSuccess = () => {
-    dispatch(fetchAppData({}));
-    router.push("/backoffice/menu-categories");
     dispatch(
-      setOpenSnackbar({ message: "Deleted menu category successfully.." })
+      fetchAppData({
+        onSuccess: () => {
+          router.push("/backoffice/menu-categories");
+          dispatch(
+            setOpenSnackbar({ message: "Deleted menu category successfully.." })
+          );
+        },
+      })
     );
   };
 
