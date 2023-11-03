@@ -1,11 +1,6 @@
 import { ItemCard } from "@/components/ItemCard";
 import { NewTable } from "@/components/NewTable";
-<<<<<<< HEAD
 import { useAppSelector } from "@/store/hooks";
-=======
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setTablesByLocationId } from "@/store/slices/tableSlice";
->>>>>>> f3e427375e855474c44d8d72990eaaaf6d1773f4
 import TableBarIcon from "@mui/icons-material/TableBar";
 import { Box, Button } from "@mui/material";
 import { Table } from "@prisma/client";
