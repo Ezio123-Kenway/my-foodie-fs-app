@@ -17,10 +17,11 @@ export default async function handler(
     const menus = await prisma.menu.findMany({ where: { isArchived: false } });
     return res.status(200).send(menus);
   } else if (method === "POST") {
-    const { name, price, menuCategoryIds } = req.body as CreateMenuOptions;
+    const { name, price, assetUrl, menuCategoryIds } =
+      req.body as CreateMenuOptions;
     const isValid = name && price !== undefined && menuCategoryIds.length > 0;
     if (!isValid) return res.status(400).send("Bad request");
-    const data = { name, price };
+    const data = { name, price, imageUrl: assetUrl };
     const newMenu = await prisma.menu.create({ data });
     const menuCategoryMenuDatas = menuCategoryIds.map((menuCategoryId) => ({
       menuCategoryId,

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import { ItemCard } from "@/components/ItemCard";
+import MenuCard from "@/components/MenuCard";
 
 const MenusPage = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -24,13 +25,7 @@ const MenusPage = () => {
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {menus.map((menu) => (
-          <Link
-            href={`menus/${menu.id}`}
-            key={menu.id}
-            style={{ textDecoration: "none" }}
-          >
-            <ItemCard icon={<LocalDiningIcon />} title={menu.name} />
-          </Link>
+          <MenuCard key={menu.id} menu={menu} href={`menus/${menu.id}`} />
         ))}
       </Box>
       <NewMenu open={open} setOpen={setOpen} />
