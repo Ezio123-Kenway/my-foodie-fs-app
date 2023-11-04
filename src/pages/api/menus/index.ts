@@ -60,18 +60,51 @@ export default async function handler(
       where: { id: menuId },
     });
     if (!menuToUpdate) return res.status(400).send("Bad request");
+    const addonCategoryIds = (
+      await prisma.menuAddonCategory.findMany({
+        where: { menuId, isArchived: false },
+      })
+    ).map((item) => item.addonCategoryId);
+
+    const addonCategoryIdsPromise = addonCategoryIds.map(
+      async (addonCategoryId) => {
+        const addonCategoryData = { addonCategoryId, count: 1 };
+        const count = await prisma.menuAddonCategory.count({
+          where: { addonCategoryId, isArchived: false },
+        });
+        addonCategoryData.count = count;
+        return addonCategoryData;
+      }
+    );
+
+    const addonCategoryIdsToArchive = (
+      await Promise.all(addonCategoryIdsPromise)
+    )
+      .filter((item) => item.count === 1)
+      .map((element) => element.addonCategoryId);
+
+    for (const addonCategoryId of addonCategoryIdsToArchive) {
+      await prisma.addon.updateMany({
+        where: { addonCategoryId },
+        data: { isArchived: true },
+      });
+
+      await prisma.addonCategory.update({
+        where: { id: addonCategoryId },
+        data: { isArchived: true },
+      });
+    }
+
     await prisma.menuAddonCategory.updateMany({
       where: { menuId },
       data: { isArchived: true },
     });
-    await prisma.menuCategoryMenu.updateMany({
-      where: { menuId },
-      data: { isArchived: true },
-    });
+
     await prisma.menu.update({
       where: { id: menuId },
       data: { isArchived: true },
     });
+
     return res.status(200).send("Deleted");
   }
   res.status(405).json("Invalid method");
