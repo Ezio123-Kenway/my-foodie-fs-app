@@ -160,7 +160,7 @@ model OrderLine {
 model Table {
   id Int @id @default(autoincrement())
   name String
-  assetUrl String?
+  assetUrl String
   location Location @relation(fields: [locationId], references: [id])
   locationId Int
   orders Order[]

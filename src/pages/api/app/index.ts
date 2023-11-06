@@ -83,7 +83,7 @@ export default async function handler(
     // 10. Create new table
     const newTableName = "Default Table";
     const table = await prisma.table.create({
-      data: { name: newTableName, locationId: location.id },
+      data: { name: newTableName, locationId: location.id, assetUrl: "" },
     });
 
     return res.status(200).json({
