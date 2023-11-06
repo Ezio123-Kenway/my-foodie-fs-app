@@ -33,12 +33,13 @@ const initialState: MenuSliceState = {
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
   async (options: CreateMenuOptions, thunkApi) => {
-    const { name, price, menuCategoryIds, onSuccess, onError } = options;
+    const { name, price, imageUrl, menuCategoryIds, onSuccess, onError } =
+      options;
     try {
       const response = await fetch(`${config.apiBaseUrl}/menus`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, price, menuCategoryIds }),
+        body: JSON.stringify({ name, price, imageUrl, menuCategoryIds }),
       });
       const { newMenu, menuCategoryMenus } = await response.json();
       thunkApi.dispatch(addMenu(newMenu));
@@ -78,9 +79,6 @@ export const deleteMenu = createAsyncThunk(
       await fetch(`${config.apiBaseUrl}/menus?id=${id}`, {
         method: "DELETE",
       });
-      thunkApi.dispatch(removeMenu({ id }));
-      thunkApi.dispatch(removeMenuAddonCategoriesByMenuId({ menuId: id }));
-      thunkApi.dispatch(removeMenuCategoryMenusByMenuId({ menuId: id }));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();

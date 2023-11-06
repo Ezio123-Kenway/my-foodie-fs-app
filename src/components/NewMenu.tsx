@@ -20,6 +20,8 @@ import {
   TextField,
 } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
+import { FileDropZone } from "./FileDropZone";
+import { config } from "@/utils/config";
 
 interface Props {
   open: boolean;
@@ -35,6 +37,7 @@ const defaultMenu: CreateMenuOptions = {
 export const NewMenu = ({ open, setOpen }: Props) => {
   const [newMenu, setNewMenu] = useState<CreateMenuOptions>(defaultMenu);
   const dispatch = useAppDispatch();
+  const [menuImage, setMenuImage] = useState<File>();
   const menuCategories = useAppSelector((state) => state.menuCategory.items);
 
   const handleOnChange = (evt: SelectChangeEvent<number[]>) => {
@@ -50,8 +53,23 @@ export const NewMenu = ({ open, setOpen }: Props) => {
     dispatch(setOpenSnackbar({ message: "Created new menu successfully.." }));
   };
 
-  const handleCreateMenu = () => {
-    dispatch(createMenu({ ...newMenu, onSuccess }));
+  const handleCreateMenu = async () => {
+    const newMenuPayLoad = { ...newMenu };
+    if (menuImage) {
+      const formData = new FormData();
+      formData.append("files", menuImage);
+      const response = await fetch(`${config.apiBaseUrl}/assets`, {
+        method: "POST",
+        body: formData,
+      });
+      const { imageUrl } = await response.json();
+      newMenuPayLoad.imageUrl = imageUrl;
+    }
+    dispatch(createMenu({ ...newMenuPayLoad, onSuccess }));
+  };
+
+  const onFileSelected = (files: File[]) => {
+    setMenuImage(files[0]);
   };
 
   return (
@@ -128,6 +146,16 @@ export const NewMenu = ({ open, setOpen }: Props) => {
               ))}
             </Select>
           </FormControl>
+          <Box sx={{ mt: 2 }}>
+            <FileDropZone onFileSelected={onFileSelected} />
+            {menuImage && (
+              <Chip
+                sx={{ mt: 2 }}
+                label={menuImage.name}
+                onDelete={() => setMenuImage(undefined)}
+              />
+            )}
+          </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Button
               variant="contained"

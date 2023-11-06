@@ -16,10 +16,11 @@ export default async function handler(
     const menus = await prisma.menu.findMany({ where: { isArchived: false } });
     return res.status(200).send(menus);
   } else if (method === "POST") {
-    const { name, price, menuCategoryIds } = req.body as CreateMenuOptions;
+    const { name, price, imageUrl, menuCategoryIds } =
+      req.body as CreateMenuOptions;
     const isValid = name && price !== undefined && menuCategoryIds.length > 0;
     if (!isValid) return res.status(400).send("Bad request");
-    const data = { name, price };
+    const data = { name, price, imageUrl };
     const newMenu = await prisma.menu.create({ data });
     const menuCategoryMenuDatas = menuCategoryIds.map((menuCategoryId) => ({
       menuCategoryId,
@@ -60,6 +61,7 @@ export default async function handler(
       where: { id: menuId },
     });
     if (!menuToUpdate) return res.status(400).send("Bad request");
+
     const addonCategoryIds = (
       await prisma.menuAddonCategory.findMany({
         where: { menuId, isArchived: false },
@@ -88,7 +90,6 @@ export default async function handler(
         where: { addonCategoryId },
         data: { isArchived: true },
       });
-
       await prisma.addonCategory.update({
         where: { id: addonCategoryId },
         data: { isArchived: true },
@@ -99,7 +100,6 @@ export default async function handler(
       where: { menuId },
       data: { isArchived: true },
     });
-
     await prisma.menu.update({
       where: { id: menuId },
       data: { isArchived: true },

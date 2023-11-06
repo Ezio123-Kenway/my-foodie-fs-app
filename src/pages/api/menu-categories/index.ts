@@ -52,6 +52,7 @@ export default async function handler(
         where: { menuCategoryId, isArchived: false },
       })
     ).map((item) => item.menuId);
+
     const menuIdsPromise = menuIds.map(async (menuId) => {
       const menuData = { menuId, count: 1 };
       const count = await prisma.menuCategoryMenu.count({
@@ -64,7 +65,6 @@ export default async function handler(
     const menuIdsToArchive = (await Promise.all(menuIdsPromise))
       .filter((item) => item.count === 1)
       .map((element) => element.menuId);
-    console.log("menuIdsToArchive: ", menuIdsToArchive);
 
     const addonCategoryIds = (
       await prisma.menuAddonCategory.findMany({
@@ -90,8 +90,6 @@ export default async function handler(
     const addonCategoryIdsToArchive = (
       await Promise.all(addonCategoryIdsPromise)
     ).filter((item) => item !== undefined);
-
-    console.log("addonCategoryIdsToArchive: ", addonCategoryIdsToArchive);
 
     for (const addonCategoryId of addonCategoryIdsToArchive) {
       await prisma.addon.updateMany({
