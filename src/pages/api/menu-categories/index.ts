@@ -28,7 +28,7 @@ export default async function handler(
     });
     return res.status(200).json({ newMenuCategory });
   } else if (method === "PUT") {
-    const { id, name } = req.body;
+    const { id, name, locationId, isAvailable } = req.body;
     const isValid = id && name;
     if (!isValid) return res.status(400).send("Bad request");
     const menuCategoryToUpdate = await prisma.menuCategory.findUnique({
@@ -39,6 +39,34 @@ export default async function handler(
       where: { id },
       data: { name },
     });
+    if (locationId && isAvailable === false) {
+      const exist = await prisma.disabledLocationMenuCategory.findFirst({
+        where: { locationId, menuCategoryId: id },
+      });
+      if (exist) {
+        return res.status(200).json({ updatedMenuCategory });
+      }
+
+      const disabledLocationMenuCategory =
+        await prisma.disabledLocationMenuCategory.create({
+          data: { locationId, menuCategoryId: id },
+        });
+      return res
+        .status(200)
+        .json({ updatedMenuCategory, disabledLocationMenuCategory });
+    } else if (locationId && isAvailable === true) {
+      const exist = await prisma.disabledLocationMenuCategory.findFirst({
+        where: { locationId, menuCategoryId: id },
+      });
+      if (exist) {
+        await prisma.disabledLocationMenuCategory.delete({
+          where: { id: exist.id },
+        });
+      }
+
+      return res.status(200).json({ updatedMenuCategory });
+    }
+
     return res.status(200).json({ updatedMenuCategory });
   } else if (method === "DELETE") {
     const menuCategoryId = Number(req.query.id);

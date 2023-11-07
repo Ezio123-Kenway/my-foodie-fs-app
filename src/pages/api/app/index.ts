@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
+import { getQrCodeUrl, qrCodeImageUpload } from "@/utils/fileUpload";
 
 export default async function handler(
   req: NextApiRequest,
@@ -82,8 +83,14 @@ export default async function handler(
 
     // 10. Create new table
     const newTableName = "Default Table";
-    const table = await prisma.table.create({
+    const newTable = await prisma.table.create({
       data: { name: newTableName, locationId: location.id, assetUrl: "" },
+    });
+    await qrCodeImageUpload(company.id, newTable.id);
+    const assetUrl = getQrCodeUrl(company.id, newTable.id);
+    const table = await prisma.table.update({
+      where: { id: newTable.id },
+      data: { assetUrl },
     });
 
     return res.status(200).json({
@@ -114,7 +121,11 @@ export default async function handler(
       (menuCategory) => menuCategory.id
     );
 
-    // 4 find menus
+    // 4 find menus, menuCategoryMenus and DisabledLocationMenuCategories
+    const disabledLocationMenuCategories =
+      await prisma.disabledLocationMenuCategory.findMany({
+        where: { menuCategoryId: { in: menuCategoryIds }, isArchived: false },
+      });
     const menuCategoryMenus = await prisma.menuCategoryMenu.findMany({
       where: { menuCategoryId: { in: menuCategoryIds }, isArchived: false },
     });
@@ -154,6 +165,7 @@ export default async function handler(
       menuAddonCategories,
       addons,
       tables,
+      disabledLocationMenuCategories,
     });
   }
 

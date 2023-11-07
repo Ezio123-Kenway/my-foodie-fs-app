@@ -9,6 +9,7 @@ import menuCategoryMenuReducer from "./slices/menuCategoryMenuSlice";
 import tableReducer from "./slices/tableSlice";
 import appReducer from "./slices/appSlice";
 import snackBarReducer from "./slices/snackBarSlice";
+import disabledLocationMenuCategoryReducer from "./slices/disabledLocationMenuCategorySlice";
 // ...
 
 export const store = configureStore({
@@ -17,6 +18,7 @@ export const store = configureStore({
     menu: menuReducer,
     menuCategory: menuCategoryReducer,
     menuCategoryMenu: menuCategoryMenuReducer,
+    disabledLocationMenuCategory: disabledLocationMenuCategoryReducer,
     addonCategory: addonCategoryReducer,
     menuAddonCategory: menuAddonCategoryReducer,
     addon: addonReducer,

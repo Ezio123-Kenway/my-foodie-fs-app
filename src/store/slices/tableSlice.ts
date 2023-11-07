@@ -24,8 +24,9 @@ export const createTable = createAsyncThunk(
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ name, locationId }),
       });
-      const { newTable } = await response.json();
-      thunkApi.dispatch(addTable(newTable));
+      const { newTableWithAssetUrl } = await response.json();
+      console.log("newTable: ", newTableWithAssetUrl);
+      thunkApi.dispatch(addTable(newTableWithAssetUrl));
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();
