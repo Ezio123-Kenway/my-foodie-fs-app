@@ -31,7 +31,7 @@ export const Topbar = () => {
           <Button
             variant="contained"
             sx={{ width: "fit-content", backgroundColor: "primary.main" }}
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => signOut({ callbackUrl: "/backoffice" })}
           >
             Sign Out
           </Button>

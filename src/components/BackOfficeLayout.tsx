@@ -10,7 +10,7 @@ interface Props {
   children: ReactNode;
 }
 
-const BackofficeLayout = ({ children }: Props) => {
+export const BackofficeLayout = ({ children }: Props) => {
   const { data: session } = useSession();
   const dispatch = useAppDispatch();
   const { init } = useAppSelector((state) => state.app);
@@ -31,5 +31,3 @@ const BackofficeLayout = ({ children }: Props) => {
     </Box>
   );
 };
-
-export default BackofficeLayout;

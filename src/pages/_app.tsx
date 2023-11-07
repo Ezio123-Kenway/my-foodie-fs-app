@@ -1,4 +1,4 @@
-import { Layout } from "@/components/Layout";
+import Layout from "@/components/Layout";
 import { Snackbar } from "@/components/Snackbar";
 import { store } from "@/store/store";
 import "@/styles/globals.css";
