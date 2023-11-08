@@ -8,12 +8,14 @@ import {
   Button,
   Checkbox,
   FormControl,
+  FormControlLabel,
   InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
   SelectChangeEvent,
+  Switch,
   TextField,
 } from "@mui/material";
 import { Menu } from "@prisma/client";
@@ -34,6 +36,9 @@ const MenuDetailPage = () => {
   const menuCategoryIds = menuCategoryMenus
     .filter((menuCategoryMenu) => menuCategoryMenu.menuId === menuId)
     .map((item) => item.menuCategoryId);
+  const disabledLocationMenus = useAppSelector(
+    (state) => state.disabledLocationMenu.items
+  );
 
   const dispatch = useAppDispatch();
 
@@ -43,14 +48,22 @@ const MenuDetailPage = () => {
 
   useEffect(() => {
     if (menu) {
+      const exist = disabledLocationMenus.find(
+        (item) =>
+          item.locationId ===
+            Number(localStorage.getItem("selectedLocationId")) &&
+          item.menuId === menuId
+      );
       setUpdatedMenu({
         id: menu.id,
         name: menu.name,
         price: menu.price,
         menuCategoryIds,
+        locationId: Number(localStorage.getItem("selectedLocationId")),
+        isAvailable: !exist,
       });
     }
-  }, [menu]);
+  }, [menu, disabledLocationMenus]);
 
   if (!menu || !updatedMenu) return null;
 
@@ -60,15 +73,12 @@ const MenuDetailPage = () => {
     updatedMenu.menuCategoryIds.length > 0;
 
   const handleOnChange = (evt: SelectChangeEvent<number[]>) => {
-    console.log("value: ", evt.target.value);
     const ids = evt.target.value as number[];
     setUpdatedMenu({ ...updatedMenu, menuCategoryIds: ids });
   };
 
   const onSuccess = () => {
-    dispatch(
-      setOpenSnackbar({ message: "Updated addon category successfully.." })
-    );
+    dispatch(setOpenSnackbar({ message: "Updated menu successfully.." }));
   };
 
   const handleUpdateMenu = () => {
@@ -139,6 +149,14 @@ const MenuDetailPage = () => {
             ))}
           </Select>
         </FormControl>
+        <FormControlLabel
+          control={<Switch defaultChecked={updatedMenu.isAvailable} />}
+          label="Available"
+          sx={{ mt: 2 }}
+          onChange={(evt, value) => {
+            setUpdatedMenu({ ...updatedMenu, isAvailable: value });
+          }}
+        />
         <Button
           variant="contained"
           color="primary"

@@ -2,12 +2,14 @@ import { NewMenu } from "@/components/NewMenu";
 import { useAppSelector } from "@/store/hooks";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useState } from "react";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import MenuCard from "@/components/MenuCard";
 
 const MenusPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const menus = useAppSelector((state) => state.menu.items);
+  const disabledLocationMenus = useAppSelector(
+    (state) => state.disabledLocationMenu.items
+  );
 
   return (
     <Box>
@@ -21,9 +23,22 @@ const MenusPage = () => {
         </Button>
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        {menus.map((menu) => (
-          <MenuCard menu={menu} href={`menus/${menu.id}`} />
-        ))}
+        {menus.map((menu) => {
+          const exist = disabledLocationMenus.find(
+            (item) =>
+              item.locationId ===
+                Number(localStorage.getItem("selectedLocationId")) &&
+              item.menuId === menu.id
+          );
+          return (
+            <MenuCard
+              menu={menu}
+              href={`menus/${menu.id}`}
+              key={menu.id}
+              isAvailable={!exist}
+            />
+          );
+        })}
       </Box>
       <NewMenu open={open} setOpen={setOpen} />
     </Box>

@@ -121,7 +121,7 @@ export default async function handler(
       (menuCategory) => menuCategory.id
     );
 
-    // 4 find menus, menuCategoryMenus and DisabledLocationMenuCategories
+    // 4 find menus, menuCategoryMenus, DisabledLocationMenuCategories and disabledLocationMenus
     const disabledLocationMenuCategories =
       await prisma.disabledLocationMenuCategory.findMany({
         where: { menuCategoryId: { in: menuCategoryIds }, isArchived: false },
@@ -132,6 +132,9 @@ export default async function handler(
     const menuIds = menuCategoryMenus.map((item) => item.menuId);
     const menus = await prisma.menu.findMany({
       where: { id: { in: menuIds }, isArchived: false },
+    });
+    const disabledLocationMenus = await prisma.disabledLocationMenu.findMany({
+      where: { menuId: { in: menuIds }, isArchived: false },
     });
 
     // 5 find addonCategories
@@ -166,6 +169,7 @@ export default async function handler(
       addons,
       tables,
       disabledLocationMenuCategories,
+      disabledLocationMenus,
     });
   }
 

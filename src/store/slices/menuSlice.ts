@@ -14,6 +14,10 @@ import {
 } from "./menuCategoryMenuSlice";
 import { removeMenuAddonCategoriesByMenuId } from "./menuAddonCategorySlice";
 import { Menu } from "@prisma/client";
+import {
+  addDisabledLocationMenu,
+  removeDisabledLocationMenu,
+} from "./disabledLocationMenuSlice";
 
 const initialState: MenuSliceState = {
   items: [],
@@ -54,16 +58,41 @@ export const createMenu = createAsyncThunk(
 export const updateMenu = createAsyncThunk(
   "menu/updateMenu",
   async (options: UpdateMenuOptions, thunkApi) => {
-    const { id, name, price, menuCategoryIds, onSuccess, onError } = options;
+    const {
+      id,
+      name,
+      price,
+      locationId,
+      isAvailable,
+      menuCategoryIds,
+      onSuccess,
+      onError,
+    } = options;
     try {
       const response = await fetch(`${config.apiBaseUrl}/menus`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id, name, price, menuCategoryIds }),
+        body: JSON.stringify({
+          id,
+          name,
+          price,
+          locationId,
+          isAvailable,
+          menuCategoryIds,
+        }),
       });
-      const { updatedMenu, createdMenuCategoryMenus } = await response.json();
+      const { updatedMenu, createdMenuCategoryMenus, disabledLocationMenu } =
+        await response.json();
       thunkApi.dispatch(replaceMenu(updatedMenu));
       thunkApi.dispatch(replaceMenuCategoryMenus(createdMenuCategoryMenus));
+      if (isAvailable === false) {
+        if (disabledLocationMenu)
+          thunkApi.dispatch(addDisabledLocationMenu(disabledLocationMenu));
+      } else {
+        thunkApi.dispatch(
+          removeDisabledLocationMenu({ locationId, menuId: id })
+        );
+      }
       onSuccess && onSuccess();
     } catch (error) {
       onError && onError();
