@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
+import { getQrCodeUrl } from "@/utils/fileUpload";
 
 export default async function handler(
   req: NextApiRequest,
@@ -83,7 +84,12 @@ export default async function handler(
     // 10. Create new table
     const newTableName = "Default Table";
     const table = await prisma.table.create({
-      data: { name: newTableName, locationId: location.id },
+      data: { name: newTableName, locationId: location.id, assetUrl: "" },
+    });
+    const assetUrl = getQrCodeUrl(company.id, table.id);
+    const tableWithAssetUrl = await prisma.table.update({
+      where: { id: table.id },
+      data: { assetUrl },
     });
 
     return res.status(200).json({
@@ -94,7 +100,7 @@ export default async function handler(
       menuAddonCategory,
       addonCategory,
       addons,
-      table,
+      tableWithAssetUrl,
     });
   } else {
     // 1. get company id from current user
