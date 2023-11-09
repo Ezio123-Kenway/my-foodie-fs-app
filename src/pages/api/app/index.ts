@@ -11,7 +11,6 @@ export default async function handler(
 ) {
   const method = req.method;
   const { companyId, tableId } = req.query;
-  console.log("reqQuery: ", req.query);
   const isOrderAppRequest = companyId && tableId;
 
   if (method === "GET") {
@@ -44,7 +43,7 @@ export default async function handler(
           where: { menuId: { in: menuIds } },
         })
       ).map((item) => item.menuId);
-      menus = menus.filter((menu) => disabledMenuIds.includes(menu.id));
+      menus = menus.filter((menu) => !disabledMenuIds.includes(menu.id));
 
       const menuAddonCategories = await prisma.menuAddonCategory.findMany({
         where: { menuId: { in: menuIds }, isArchived: false },

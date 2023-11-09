@@ -22,14 +22,14 @@ const MenuCard = ({ menu, href, isAvailable }: Props) => {
     >
       <Card
         sx={{
-          width: 210,
-          height: 230,
+          width: 200,
+          height: 220,
           pb: 2,
           opacity: isAvailable === false ? 0.4 : 1,
         }}
       >
         <CardMedia
-          sx={{ height: 140, objectFit: "contain" }}
+          sx={{ height: 140 }}
           image={menu.imageUrl || "/default-menu.png"}
           component={"div"}
         />
