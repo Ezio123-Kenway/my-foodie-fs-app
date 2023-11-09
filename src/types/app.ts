@@ -9,4 +9,7 @@ export interface BaseOptions {
   onError?: (data?: any) => void;
 }
 
-export interface GetAppDataOptions extends BaseOptions {}
+export interface GetAppDataOptions extends BaseOptions {
+  companyId?: number;
+  tableId?: number;
+}

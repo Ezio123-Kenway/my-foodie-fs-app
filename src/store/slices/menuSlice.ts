@@ -25,15 +25,6 @@ const initialState: MenuSliceState = {
   error: null,
 };
 
-// export const getMenus = createAsyncThunk(
-//   "menu/getMenus",
-//   async (_, thunkApi) => {
-//     const response = await fetch(`${config.apiBaseUrl}/menus`);
-//     const menus = await response.json();
-//     thunkApi.dispatch(setMenus(menus));
-//   }
-// );
-
 export const createMenu = createAsyncThunk(
   "menu/createMenu",
   async (options: CreateMenuOptions, thunkApi) => {

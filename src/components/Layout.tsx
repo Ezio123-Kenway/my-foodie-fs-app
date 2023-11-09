@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
-import { OrderLayout } from "./OrderLayout";
 import { BackofficeLayout } from "./BackOfficeLayout";
+import { OrderLayout } from "./OrderLayout";
 
 interface Props {
   children: string | JSX.Element | JSX.Element[];

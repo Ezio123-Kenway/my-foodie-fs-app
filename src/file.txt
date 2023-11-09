@@ -80,3 +80,11 @@
   }
   res.status(405).send("Method now allowed.");
 }
+
+<html>
+  <head>
+    <title>Print Image</title>
+  </head>
+  <body style="text-align: center;"><img src="${assetUrl}" onload="window.print();window.close()" />
+  </body>
+</html>
