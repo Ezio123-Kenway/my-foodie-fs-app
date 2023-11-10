@@ -26,7 +26,6 @@ export default async function handler(
           where: { menuCategoryId: { in: menuCategoryIds } },
         })
       ).map((item) => item.menuCategoryId);
-
       menuCategories = menuCategories.filter(
         (menuCategory) => !disabledMenuCategoryIds.includes(menuCategory.id)
       );
