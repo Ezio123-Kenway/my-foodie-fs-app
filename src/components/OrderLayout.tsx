@@ -13,7 +13,7 @@ const OrderLayout = ({ children }: Props) => {
   const router = useRouter();
   const { companyId, tableId } = router.query;
   const dispatch = useAppDispatch();
-  // const items = useAppSelector((state) => state.cart.items);
+  const items = useAppSelector((state) => state.cart.items);
   const isHome = router.pathname === "/order";
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const OrderLayout = ({ children }: Props) => {
 
   return (
     <Box>
-      <OrderAppHeader cartItemCount={1} />
+      <OrderAppHeader cartItemCount={items.length} />
       <Box
         sx={{
           position: "relative",

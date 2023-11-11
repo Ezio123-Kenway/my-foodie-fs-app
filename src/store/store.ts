@@ -11,6 +11,7 @@ import appReducer from "./slices/appSlice";
 import snackBarReducer from "./slices/snackBarSlice";
 import disabledLocationMenuCategoryReducer from "./slices/disabledLocationMenuCategorySlice";
 import disabledLocationMenuReducer from "./slices/disabledLocationMenuSlice";
+import cartReducer from "./slices/cartSlice";
 // ...
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     location: locationReducer,
     table: tableReducer,
     snackBar: snackBarReducer,
+    cart: cartReducer,
   },
 });
 
