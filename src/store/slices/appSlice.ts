@@ -21,11 +21,11 @@ const initialState: AppSliceState = {
 export const fetchAppData = createAsyncThunk(
   "app/fetchAppData",
   async (options: GetAppDataOptions, thunkApi) => {
-    const { companyId, tableId, onSuccess, onError } = options;
+    const { locationId, tableId, onSuccess, onError } = options;
     try {
       const appDataUrl =
-        companyId && tableId
-          ? `${config.apiBaseUrl}/app?companyId=${companyId}&tableId=${tableId}`
+        locationId && tableId
+          ? `${config.apiBaseUrl}/app?locationId=${locationId}&tableId=${tableId}`
           : `${config.apiBaseUrl}/app`;
       const response = await fetch(appDataUrl);
       const appData = await response.json();

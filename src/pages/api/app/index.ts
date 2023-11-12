@@ -10,20 +10,25 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const method = req.method;
-  const { companyId, tableId } = req.query;
-  const isOrderAppRequest = companyId && tableId;
+  const { locationId, tableId } = req.query;
+  const isOrderAppRequest = locationId && tableId;
 
   if (method === "GET") {
     if (isOrderAppRequest) {
+      const location = await prisma.location.findUnique({
+        where: { id: Number(locationId) },
+      });
+      if (!location) return res.status(400).send("Bad request");
+      const companyId = location.companyId;
       let menuCategories = await prisma.menuCategory.findMany({
-        where: { companyId: Number(companyId), isArchived: false },
+        where: { companyId, isArchived: false },
       });
       const menuCategoryIds = menuCategories.map(
         (menuCategory) => menuCategory.id
       );
       const disabledMenuCategoryIds = (
         await prisma.disabledLocationMenuCategory.findMany({
-          where: { menuCategoryId: { in: menuCategoryIds } },
+          where: { locationId: Number(locationId) },
         })
       ).map((item) => item.menuCategoryId);
       menuCategories = menuCategories.filter(
@@ -39,7 +44,7 @@ export default async function handler(
       });
       const disabledMenuIds = (
         await prisma.disabledLocationMenu.findMany({
-          where: { menuId: { in: menuIds } },
+          where: { locationId: Number(locationId) },
         })
       ).map((item) => item.menuId);
       menus = menus.filter((menu) => !disabledMenuIds.includes(menu.id));

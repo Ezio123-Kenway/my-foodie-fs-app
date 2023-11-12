@@ -8,7 +8,8 @@ import { useEffect, useState } from "react";
 const OrderApp = () => {
   const { isReady, ...router } = useRouter();
   const query = router.query;
-  const companyId = query.companyId as string;
+  console.log("query: ", query);
+  const locationId = query.locationId as string;
   const [value, setValue] = useState<number>(0);
   const [selectedMenuCategory, setSelectedMenuCategory] = useState<
     MenuCategory | undefined
@@ -26,7 +27,7 @@ const OrderApp = () => {
   }, [menuCategories]);
 
   useEffect(() => {
-    if (isReady && !companyId) {
+    if (isReady && !locationId) {
       router.push("/");
     }
   }, [isReady]);

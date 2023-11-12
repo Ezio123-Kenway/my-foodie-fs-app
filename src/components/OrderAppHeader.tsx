@@ -25,6 +25,7 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
         alignItems: "center",
         position: "fixed",
         zIndex: 5,
+        top: 0,
       }}
     >
       {showCartIcon && (
