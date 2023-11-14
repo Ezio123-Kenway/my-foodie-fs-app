@@ -13,18 +13,14 @@ export default async function handler(
   const method = req.method;
   if (method === "POST") {
     const { name, locationId } = req.body;
-    const user = session.user;
-    const email = user?.email as string;
-    const dbUser = await prisma.user.findUnique({ where: { email } });
-    const isValid = name && locationId && dbUser;
+    const isValid = name && locationId;
     if (!isValid) return res.status(400).send("Bad request");
     const newTable = await prisma.table.create({
       data: { name, locationId, assetUrl: "" },
     });
-    const companyId = dbUser.companyId;
     const tableId = newTable.id;
-    await qrCodeImageUpload(companyId, tableId);
-    const assetUrl = getQrCodeUrl(companyId, tableId);
+    await qrCodeImageUpload(tableId);
+    const assetUrl = getQrCodeUrl(tableId);
     const newTableWithAssetUrl = await prisma.table.update({
       where: { id: tableId },
       data: { assetUrl },

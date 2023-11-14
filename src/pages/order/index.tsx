@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 const OrderApp = () => {
   const { isReady, ...router } = useRouter();
   const query = router.query;
-  const companyId = query.companyId as string;
+  const tableId = query.tableId as string;
   const [value, setValue] = useState<number>(0);
   const [selectedMenuCategory, setSelectedMenuCategory] = useState<
     MenuCategory | undefined
@@ -26,7 +26,7 @@ const OrderApp = () => {
   }, [menuCategories]);
 
   useEffect(() => {
-    if (isReady && !companyId) {
+    if (isReady && !tableId) {
       router.push("/");
     }
   }, [isReady]);
@@ -43,7 +43,7 @@ const OrderApp = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ position: "relative", zIndex: 5 }}>
       <Box>
         <Tabs
           TabIndicatorProps={{ style: { background: "#1B9C85" } }}

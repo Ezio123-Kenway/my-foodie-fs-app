@@ -1,9 +1,9 @@
+import Home from "@mui/icons-material/Home";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
-import OrderAppHeaderImg from "../assets/order-app-header.svg";
 
 interface Props {
   cartItemCount: number;
@@ -14,7 +14,7 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
   const isHome = router.pathname === "/order";
   const isCart = router.pathname === "/order/cart";
   const isActiveOrder = router.pathname.includes("/order/activeOrder");
-  const showCartIcon = !isCart && !isActiveOrder;
+  const isCartOrActiveOrderPage = isCart || isActiveOrder;
 
   return (
     <Box
@@ -25,51 +25,65 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
         alignItems: "center",
         position: "fixed",
         zIndex: 5,
+        top: 0,
       }}
     >
-      {showCartIcon && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 10,
-            right: { xs: 40, md: 80, lg: 200 },
-            cursor: "pointer",
-          }}
-          onClick={() =>
-            router.push({ pathname: "/order/cart", query: router.query })
-          }
-        >
-          <ShoppingCartCheckoutIcon
+      <Box
+        sx={{
+          position: "absolute",
+          top: 10,
+          right: { xs: 40, md: 80, lg: 200 },
+          cursor: "pointer",
+        }}
+      >
+        {isCartOrActiveOrderPage ? (
+          <Home
+            onClick={() =>
+              router.push({
+                pathname: "/order",
+                query: { ...router.query, cartItemId: undefined },
+              })
+            }
             sx={{
               fontSize: "40px",
               color: "#FFE194",
             }}
           />
-          {cartItemCount > 0 && (
-            <Typography
-              variant="h5"
+        ) : (
+          <>
+            <ShoppingCartCheckoutIcon
+              onClick={() =>
+                router.push({ pathname: "/order/cart", query: router.query })
+              }
               sx={{
-                textAlign: "right",
-                color: "#E8F6EF",
-                position: "absolute",
-                top: -10,
-                right: -10,
+                fontSize: "40px",
+                color: "#FFE194",
               }}
-            >
-              {cartItemCount}
-            </Typography>
-          )}
-        </Box>
-      )}
+            />
+            {cartItemCount > 0 && (
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: "right",
+                  color: "#E8F6EF",
+                  position: "absolute",
+                  top: -10,
+                  right: -10,
+                }}
+              >
+                {cartItemCount}
+              </Typography>
+            )}
+          </>
+        )}
+      </Box>
 
       <Image
-        src={OrderAppHeaderImg}
-        style={{
-          width: "100%",
-          padding: 0,
-          margin: 0,
-          objectFit: "cover",
-        }}
+        src="/order-app-header.svg"
+        width={0}
+        height={0}
+        sizes="100vw"
+        style={{ width: "100%", height: "auto" }}
         alt="header-image"
       />
       {isHome && (

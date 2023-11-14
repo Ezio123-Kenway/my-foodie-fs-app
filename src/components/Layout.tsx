@@ -9,8 +9,8 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   const router = useRouter();
-  const { companyId, tableId } = router.query;
-  const isOrderApp = companyId && tableId;
+  const { tableId } = router.query;
+  const isOrderApp = tableId;
   const isBackofficeApp = router.pathname.includes("/backoffice");
 
   if (isOrderApp) {

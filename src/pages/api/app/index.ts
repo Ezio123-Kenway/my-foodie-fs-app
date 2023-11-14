@@ -10,11 +10,18 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const method = req.method;
-  const { companyId, tableId } = req.query;
-  const isOrderAppRequest = companyId && tableId;
+  const { tableId } = req.query;
+  const isOrderAppRequest = tableId;
 
   if (method === "GET") {
     if (isOrderAppRequest) {
+      const table = await prisma.table.findUnique({
+        where: { id: Number(tableId) },
+      });
+      const location = await prisma.location.findUnique({
+        where: { id: table?.locationId },
+      });
+      const companyId = location?.companyId;
       let menuCategories = await prisma.menuCategory.findMany({
         where: { companyId: Number(companyId), isArchived: false },
       });
@@ -23,7 +30,7 @@ export default async function handler(
       );
       const disabledMenuCategoryIds = (
         await prisma.disabledLocationMenuCategory.findMany({
-          where: { menuCategoryId: { in: menuCategoryIds } },
+          where: { locationId: location?.id },
         })
       ).map((item) => item.menuCategoryId);
       menuCategories = menuCategories.filter(
@@ -39,7 +46,7 @@ export default async function handler(
       });
       const disabledMenuIds = (
         await prisma.disabledLocationMenu.findMany({
-          where: { menuId: { in: menuIds } },
+          where: { locationId: location?.id },
         })
       ).map((item) => item.menuId);
       menus = menus.filter((menu) => !disabledMenuIds.includes(menu.id));
@@ -150,8 +157,8 @@ export default async function handler(
         const newTable = await prisma.table.create({
           data: { name: newTableName, locationId: location.id, assetUrl: "" },
         });
-        await qrCodeImageUpload(company.id, newTable.id);
-        const assetUrl = getQrCodeUrl(company.id, newTable.id);
+        await qrCodeImageUpload(newTable.id);
+        const assetUrl = getQrCodeUrl(newTable.id);
         const table = await prisma.table.update({
           where: { id: newTable.id },
           data: { assetUrl },

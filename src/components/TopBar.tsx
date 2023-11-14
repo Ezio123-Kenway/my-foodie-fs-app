@@ -2,9 +2,12 @@ import { Box, Button, Typography } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 import logo from "../assets/logo.png";
 import Image from "next/image";
+import { useAppSelector } from "@/store/hooks";
 
 export const Topbar = () => {
   const { data } = useSession();
+  const { selectedLocation } = useAppSelector((state) => state.location);
+  console.log("selectedLocation: ", selectedLocation);
 
   return (
     <Box
@@ -23,9 +26,20 @@ export const Topbar = () => {
           style={{ width: "100%", height: "100%" }}
         />
       </Box>
-      <Typography variant="h5" color={"secondary"}>
-        Foodie POS
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h5" color={"secondary"}>
+          Foodie POS
+        </Typography>
+        <Typography color={"secondary"} sx={{ fontSize: 13 }}>
+          ({selectedLocation && selectedLocation.name})
+        </Typography>
+      </Box>
       <Box>
         {data ? (
           <Button
