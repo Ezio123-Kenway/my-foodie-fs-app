@@ -20,18 +20,16 @@ const SettingsPage = () => {
       const selectedLocationId = localStorage.getItem("selectedLocationId");
       if (selectedLocationId) {
         setSelectedLocationId(selectedLocationId);
-        const location = locations.find(
-          (item) => item.id === Number(selectedLocationId)
-        );
-        location && dispatch(setSelectedLocation(location));
       }
     }
-  }, [locations, selectedLocationId]);
+  }, [locations]);
 
   const handleLocationChange = (evt: SelectChangeEvent<number>) => {
     const id = evt.target.value as number;
     localStorage.setItem("selectedLocationId", String(id));
     setSelectedLocationId(String(id));
+    const location = locations.find((item) => item.id === id);
+    location && dispatch(setSelectedLocation(location));
   };
 
   if (!selectedLocationId) return null;

@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
 import { getQrCodeUrl, qrCodeImageUpload } from "@/utils/fileUpload";
+import { Location } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,19 +19,19 @@ export default async function handler(
       const table = await prisma.table.findUnique({
         where: { id: Number(tableId) },
       });
-      const location = await prisma.location.findUnique({
+      const location = (await prisma.location.findUnique({
         where: { id: table?.locationId },
-      });
-      const companyId = location?.companyId;
+      })) as Location;
+      const companyId = location.companyId;
       let menuCategories = await prisma.menuCategory.findMany({
-        where: { companyId: Number(companyId), isArchived: false },
+        where: { companyId, isArchived: false },
       });
       const menuCategoryIds = menuCategories.map(
         (menuCategory) => menuCategory.id
       );
       const disabledMenuCategoryIds = (
         await prisma.disabledLocationMenuCategory.findMany({
-          where: { locationId: location?.id },
+          where: { locationId: location.id },
         })
       ).map((item) => item.menuCategoryId);
       menuCategories = menuCategories.filter(
@@ -46,7 +47,7 @@ export default async function handler(
       });
       const disabledMenuIds = (
         await prisma.disabledLocationMenu.findMany({
-          where: { locationId: location?.id },
+          where: { locationId: location.id },
         })
       ).map((item) => item.menuId);
       menus = menus.filter((menu) => !disabledMenuIds.includes(menu.id));
