@@ -75,22 +75,14 @@ const MenuDetailPage = () => {
   const handleAddToCart = () => {
     if (!menu) return;
     const newCartItem: CartItem = {
-      id:
-        cartItem && cartItem.menu.id === menu.id
-          ? cartItem.id
-          : generateRandomId(),
+      id: cartItem ? cartItem.id : generateRandomId(),
       menu,
       addons: selectedAddons,
       quantity,
     };
     dispatch(addToCart(newCartItem));
-    const pathname =
-      cartItem && cartItem.menu.id === menu.id ? "/order/cart" : "/order";
-    const newQuery =
-      cartItem && cartItem.menu.id === menu.id
-        ? { ...query, cartItemId }
-        : { ...query, cartItemId: undefined };
-    router.push({ pathname, query: newQuery });
+    const pathname = cartItem ? "/order/cart" : "/order";
+    router.push({ pathname, query });
   };
 
   if (!menu || !isReady) return null;

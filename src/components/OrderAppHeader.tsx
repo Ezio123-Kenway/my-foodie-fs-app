@@ -41,7 +41,7 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
             onClick={() =>
               router.push({
                 pathname: "/order",
-                query: { ...router.query, cartItemId: undefined },
+                query: { tableId: router.query.tableId },
               })
             }
             sx={{
