@@ -76,9 +76,10 @@ const MenuDetailPage = () => {
     if (cartItemId) return;
     const sameMenuItems = cartItems.filter((item) => item.menu.id === menuId);
     if (!sameMenuItems.length) return;
-    const sameCartItem = sameMenuItems.find((item) => {
+    const sameCartItem = sameMenuItems.find((sameItem) => {
+      if (selectedAddons.length !== sameItem.addons.length) return;
       const currentAddons = selectedAddons.filter((addon) =>
-        item.addons.includes(addon)
+        sameItem.addons.includes(addon)
       );
       return currentAddons.length === selectedAddons.length ? true : false;
     });
@@ -90,7 +91,6 @@ const MenuDetailPage = () => {
     if (!menu) return;
 
     const item = handleSameCartItem(menuId, selectedAddons);
-    console.log("item: ", item);
 
     const newCartItem: CartItem = item
       ? {

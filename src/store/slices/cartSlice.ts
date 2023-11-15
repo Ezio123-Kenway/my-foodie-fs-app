@@ -28,26 +28,36 @@ export const cartSlice = createSlice({
         const sameMenuItems = state.items.filter(
           (item) => item.menu.id === menu.id
         );
-        if (sameMenuItems.length) {
-          const sameCartItem = sameMenuItems.find((item) => {
-            const selectedAddons = addons.filter((addon) =>
-              item.addons.includes(addon)
-            );
-            return selectedAddons.length === addons.length ? true : false;
-          });
-          if (sameCartItem) {
-            const newQuantity = sameCartItem.quantity + action.payload.quantity;
-            state.items = state.items.map((item) =>
-              item.id === sameCartItem.id
-                ? { ...item, quantity: newQuantity }
-                : item
-            );
-          } else {
-            state.items = [...state.items, action.payload];
-          }
-        } else {
+
+        if (!sameMenuItems.length) {
+          // no same menu items
           state.items = [...state.items, action.payload];
+          return;
         }
+
+        // finding the same-cart-item
+        const sameCartItem = sameMenuItems.find((item) => {
+          if (addons.length !== item.addons.length) return false;
+
+          const selectedAddons = addons.filter((addon) =>
+            item.addons.includes(addon)
+          );
+          return selectedAddons.length === addons.length ? true : false;
+        });
+
+        if (!sameCartItem) {
+          // no same cart item
+          state.items = [...state.items, action.payload];
+          return;
+        }
+
+        // updating the quantity synchronously
+        const newQuantity = sameCartItem.quantity + action.payload.quantity;
+        state.items = state.items.map((item) =>
+          item.id === sameCartItem.id
+            ? { ...item, quantity: newQuantity }
+            : item
+        );
       }
     },
     removeFromCart: (state, action: PayloadAction<CartItem>) => {
