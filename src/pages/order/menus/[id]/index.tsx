@@ -72,25 +72,54 @@ const MenuDetailPage = () => {
     setQuantity(quantity + 1);
   };
 
+  const handleSameCartItem = (menuId: number, selectedAddons: Addon[]) => {
+    if (cartItemId) return;
+    const sameMenuItems = cartItems.filter((item) => item.menu.id === menuId);
+    if (!sameMenuItems.length) return;
+    const sameCartItem = sameMenuItems.find((item) => {
+      const currentAddons = selectedAddons.filter((addon) =>
+        item.addons.includes(addon)
+      );
+      return currentAddons.length === selectedAddons.length ? true : false;
+    });
+    if (!sameCartItem) return;
+    return { id: sameCartItem.id, currentQuantity: sameCartItem.quantity };
+  };
+
   const handleAddToCart = () => {
     if (!menu) return;
-    const newCartItem: CartItem = {
-      id:
-        cartItem && cartItem.menu.id === menu.id
-          ? cartItem.id
-          : generateRandomId(),
-      menu,
-      addons: selectedAddons,
-      quantity,
-    };
+
+    const item = handleSameCartItem(menuId, selectedAddons);
+    console.log("item: ", item);
+
+    const newCartItem: CartItem = item
+      ? {
+          id: item.id,
+          menu,
+          addons: selectedAddons,
+          quantity: item.currentQuantity + quantity,
+        }
+      : {
+          id:
+            cartItem && cartItem.menu.id === menu.id
+              ? cartItem.id
+              : generateRandomId(),
+          menu,
+          addons: selectedAddons,
+          quantity,
+        };
     dispatch(addToCart(newCartItem));
     const pathname =
       cartItem && cartItem.menu.id === menu.id ? "/order/cart" : "/order";
-    const newQuery =
-      cartItem && cartItem.menu.id === menu.id
-        ? { ...query, cartItemId }
-        : { ...query, cartItemId: undefined };
-    router.push({ pathname, query: newQuery });
+    const queryWithCartItemId = { ...query, cartItemId };
+    const { cartItemId: itemId, ...queryWithoutCartItemId } = query;
+    router.push({
+      pathname,
+      query:
+        cartItem && cartItem.menu.id === menu.id
+          ? queryWithCartItemId
+          : queryWithoutCartItemId,
+    });
   };
 
   if (!menu || !isReady) return null;

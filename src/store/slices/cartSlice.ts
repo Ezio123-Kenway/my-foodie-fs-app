@@ -24,7 +24,30 @@ export const cartSlice = createSlice({
           item.id === action.payload.id ? action.payload : item
         );
       } else {
-        state.items = [...state.items, action.payload];
+        const { menu, addons } = action.payload;
+        const sameMenuItems = state.items.filter(
+          (item) => item.menu.id === menu.id
+        );
+        if (sameMenuItems.length) {
+          const sameCartItem = sameMenuItems.find((item) => {
+            const selectedAddons = addons.filter((addon) =>
+              item.addons.includes(addon)
+            );
+            return selectedAddons.length === addons.length ? true : false;
+          });
+          if (sameCartItem) {
+            const newQuantity = sameCartItem.quantity + action.payload.quantity;
+            state.items = state.items.map((item) =>
+              item.id === sameCartItem.id
+                ? { ...item, quantity: newQuantity }
+                : item
+            );
+          } else {
+            state.items = [...state.items, action.payload];
+          }
+        } else {
+          state.items = [...state.items, action.payload];
+        }
       }
     },
     removeFromCart: (state, action: PayloadAction<CartItem>) => {

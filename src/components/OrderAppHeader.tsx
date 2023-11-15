@@ -38,12 +38,13 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
       >
         {isCartOrActiveOrderPage ? (
           <Home
-            onClick={() =>
+            onClick={() => {
+              const { cartItemId, ...query } = router.query;
               router.push({
                 pathname: "/order",
-                query: { ...router.query, cartItemId: undefined },
-              })
-            }
+                query,
+              });
+            }}
             sx={{
               fontSize: "40px",
               color: "#FFE194",
