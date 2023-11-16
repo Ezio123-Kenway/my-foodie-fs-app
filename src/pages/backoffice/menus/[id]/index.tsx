@@ -20,7 +20,9 @@ import {
 } from "@mui/material";
 import { Menu } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import Image from "next/image";
+import { config } from "@/utils/config";
 
 const MenuDetailPage = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -61,6 +63,7 @@ const MenuDetailPage = () => {
         menuCategoryIds,
         locationId: Number(localStorage.getItem("selectedLocationId")),
         isAvailable: !exist,
+        imageUrl: menu.imageUrl,
       });
     }
   }, [menu, disabledLocationMenus]);
@@ -85,6 +88,21 @@ const MenuDetailPage = () => {
     dispatch(updateMenu({ ...updatedMenu, onSuccess }));
   };
 
+  const handleMenuImageUpdate = async (evt: ChangeEvent<HTMLInputElement>) => {
+    const files = evt.target.files;
+    if (files) {
+      const file = files[0];
+      const formData = new FormData();
+      formData.append("files", file);
+      const response = await fetch(`${config.apiBaseUrl}/assets`, {
+        method: "POST",
+        body: formData,
+      });
+      const { imageUrl } = await response.json();
+      dispatch(updateMenu({ ...updatedMenu, imageUrl }));
+    }
+  };
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
@@ -94,6 +112,30 @@ const MenuDetailPage = () => {
           onClick={() => setOpen(true)}
         >
           Delete
+        </Button>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mb: 4,
+        }}
+      >
+        <Image
+          src={menu.imageUrl || "/default-menu.png"}
+          alt="menu-image"
+          width={160}
+          height={160}
+          style={{ borderRadius: 8 }}
+        />
+        <Button
+          variant="outlined"
+          component="label"
+          sx={{ width: "fit-content", mt: 2 }}
+        >
+          Upload File
+          <input type="file" hidden onChange={handleMenuImageUpdate} />
         </Button>
       </Box>
       <Box sx={{ display: "flex", flexDirection: "column" }}>

@@ -7,7 +7,6 @@ import { useAppSelector } from "@/store/hooks";
 export const Topbar = () => {
   const { data } = useSession();
   const { selectedLocation } = useAppSelector((state) => state.location);
-  console.log("selectedLocation: ", selectedLocation);
 
   return (
     <Box

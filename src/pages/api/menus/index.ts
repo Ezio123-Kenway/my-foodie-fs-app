@@ -33,17 +33,24 @@ export default async function handler(
     );
     return res.status(200).send({ newMenu, menuCategoryMenus });
   } else if (method === "PUT") {
-    const { id, name, price, menuCategoryIds, locationId, isAvailable } =
-      req.body;
+    const {
+      id,
+      name,
+      price,
+      menuCategoryIds,
+      locationId,
+      isAvailable,
+      imageUrl,
+    } = req.body;
     const isValid =
       id && name && price !== undefined && menuCategoryIds.length > 0;
     if (!isValid) return res.status(400).send("Bad request");
-    const menuToUpdate = await prisma.menu.findUnique({ where: { id } });
-    if (!menuToUpdate) return res.status(400).send("Bad request");
+    const exist = await prisma.menu.findUnique({ where: { id } });
+    if (!exist) return res.status(400).send("Bad request");
 
     const updatedMenu = await prisma.menu.update({
       where: { id },
-      data: { name, price },
+      data: { name, price, imageUrl },
     });
     await prisma.menuCategoryMenu.deleteMany({ where: { menuId: id } });
     const menuCategoryMenuDatas = menuCategoryIds.map((selectedId: number) => ({
