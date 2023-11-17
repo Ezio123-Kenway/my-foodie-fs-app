@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Addon, AddonCategory } from "@prisma/client";
 import { CartItem } from "@/types/cart";
 import { generateRandomId } from "@/utils/generals";
-import { addToCart } from "@/store/slices/cartSlice";
+import { addToCart, updateQuantityInCart } from "@/store/slices/cartSlice";
 
 const MenuDetailPage = () => {
   const { query, isReady, ...router } = useRouter();
@@ -53,14 +53,9 @@ const MenuDetailPage = () => {
 
   useEffect(() => {
     if (cartItem && menu) {
-      if (cartItem.menu.id === menu.id) {
-        const { addons, quantity } = cartItem;
-        setSelectedAddons(addons);
-        setQuantity(quantity);
-      } else {
-        setSelectedAddons([]);
-        setQuantity(1);
-      }
+      const { addons, quantity } = cartItem;
+      setSelectedAddons(addons);
+      setQuantity(quantity);
     }
   }, [cartItem, menu]);
 
@@ -70,6 +65,28 @@ const MenuDetailPage = () => {
 
   const handleIncreaseQuantity = () => {
     setQuantity(quantity + 1);
+  };
+
+  const handleSameCartItem = (menuId: number, selectedAddons: Addon[]) => {
+    const sameMenuItems = cartItems.filter((item) => item.menu.id === menuId);
+    if (!sameMenuItems.length) return;
+    const sameCartItem = sameMenuItems.find((menuItem) => {
+      if (selectedAddons.length !== menuItem.addons.length) return;
+      // we will use array every method..
+      return selectedAddons.every((selectedAddon) =>
+        menuItem.addons.includes(selectedAddon)
+      );
+    });
+    if (!sameCartItem) return;
+    return { id: sameCartItem.id, quantity };
+  };
+
+  const handleUpdateQuantity = () => {
+    const exist = handleSameCartItem(menuId, selectedAddons);
+    if (exist) {
+      dispatch(updateQuantityInCart(exist));
+      router.push({ pathname: "/order", query });
+    }
   };
 
   const handleAddToCart = () => {
@@ -128,15 +145,17 @@ const MenuDetailPage = () => {
           <Button
             variant="contained"
             disabled={isDisabled}
-            onClick={handleAddToCart}
+            onClick={() => {
+              !handleSameCartItem(menuId, selectedAddons)
+                ? handleAddToCart()
+                : handleUpdateQuantity();
+            }}
             sx={{
               width: "fit-content",
               mt: 3,
             }}
           >
-            {cartItem && cartItem.menu.id === menu.id
-              ? "Update cart"
-              : "Add to cart"}
+            {cartItem ? "Update cart" : "Add to cart"}
           </Button>
         </Box>
       </Box>
