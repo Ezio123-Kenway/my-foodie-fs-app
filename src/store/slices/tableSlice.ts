@@ -44,7 +44,7 @@ export const updateTable = createAsyncThunk(
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ id, name }),
       });
-      const updatedTable = await response.json();
+      const { updatedTable } = await response.json();
       thunkApi.dispatch(replaceTable(updatedTable));
       onSuccess && onSuccess();
     } catch (error) {

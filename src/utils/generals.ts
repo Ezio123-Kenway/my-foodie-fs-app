@@ -1,7 +1,7 @@
 import { CartItem } from "@/types/cart";
 
-export const getCartTotalPrice = (cart: CartItem[]) => {
-  const totalPrice = cart.reduce((prev, curr) => {
+export const getCartTotalPrice = (cartItems: CartItem[]) => {
+  const totalPrice = cartItems.reduce((prev, curr) => {
     const menuPrice = curr.menu.price;
     const totalAddonPrice = curr.addons.reduce(
       (addonPrice, addon) => (addonPrice += addon.price),

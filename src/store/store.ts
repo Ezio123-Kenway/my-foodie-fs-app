@@ -12,6 +12,7 @@ import snackBarReducer from "./slices/snackBarSlice";
 import disabledLocationMenuCategoryReducer from "./slices/disabledLocationMenuCategorySlice";
 import disabledLocationMenuReducer from "./slices/disabledLocationMenuSlice";
 import cartReducer from "./slices/cartSlice";
+import orderReducer from "./slices/orderSlice";
 // ...
 
 export const store = configureStore({
@@ -29,6 +30,7 @@ export const store = configureStore({
     table: tableReducer,
     snackBar: snackBarReducer,
     cart: cartReducer,
+    order: orderReducer,
   },
 });
 
