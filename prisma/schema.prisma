@@ -138,6 +138,7 @@ model Order {
   addonId Int?
   quantity Int
   orderSeq String
+  itemId String
   status OrderStatus
   totalPrice Int
   table Table @relation(fields: [tableId], references: [id])

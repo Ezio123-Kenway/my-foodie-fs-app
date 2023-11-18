@@ -1,0 +1,37 @@
+export const formatOrders = (orders: Order[], addons: Addon[]): OrderItem[] => {
+  const itemIds: string[] = [];
+  orders.forEach((order) => {
+    const exist = itemIds.find((itemId) => itemId === order.itemId);
+    if (!exist) itemIds.push(order.itemId);
+  });
+  let orderItems: OrderItem[] = itemIds.map((itemId) => {
+    const filteredOrders = orders.filter((order) => order.itemId === itemId);
+    const addonIds = filteredOrders.map((item) => item.addonId);
+    let orderAddons: OrderAddon[] = [];
+    addonIds.forEach((addonId) => {
+      const addon = addons.find((item) => item.id === addonId) as Addon;
+      const exist = orderAddons.find(
+        (item) => item.addonCategoryId === addon.addonCategoryId
+      );
+      if (exist) {
+        orderAddons = orderAddons.map((item) => {
+          if (item.addonCategoryId === addon.addonCategoryId) {
+            return {
+              addonCategoryId: addon.addonCategoryId,
+              addons: [...item.addons, addon],
+            };
+          } else {
+            return item;
+          }
+        });
+      } else {
+        orderAddons.push({
+          addonCategoryId: addon.addonCategoryId,
+          addons: [addon],
+        });
+      }
+    });
+    return { itemId, status: filteredOrders[0].status, orderAddons };
+  });
+  return orderItems;
+};

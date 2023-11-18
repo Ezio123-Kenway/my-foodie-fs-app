@@ -69,6 +69,13 @@ export default async function handler(
         },
       });
 
+      const tables = (
+        await prisma.table.findMany({ where: { locationId: location.id } })
+      ).map((item) => item.id);
+      const orders = await prisma.order.findMany({
+        where: { tableId: { in: tables } },
+      });
+
       return res.status(200).json({
         locations: [],
         menuCategories,
@@ -80,6 +87,7 @@ export default async function handler(
         tables: [],
         disabledLocationMenuCategories: [],
         disabledLocationMenus: [],
+        orders,
       });
     } else {
       const session = await getServerSession(req, res, authOptions);
@@ -174,6 +182,7 @@ export default async function handler(
           addonCategory,
           addons,
           table,
+          order: [],
         });
       } else {
         // 1. get company id from current user
@@ -232,9 +241,14 @@ export default async function handler(
           },
         });
 
-        // 7 find tables
+        // 7 find tables and orders
         const tables = await prisma.table.findMany({
           where: { locationId: { in: locationIds }, isArchived: false },
+        });
+
+        const tableIds = tables.map((table) => table.id);
+        const orders = await prisma.order.findMany({
+          where: { tableId: { in: tableIds } },
         });
 
         // 8 response all founded data
@@ -249,6 +263,7 @@ export default async function handler(
           tables,
           disabledLocationMenuCategories,
           disabledLocationMenus,
+          orders,
         });
       }
     }

@@ -14,7 +14,13 @@ export default async function handler(
     const { tableId, cartItems } = req.body;
     const isValid = tableId && cartItems.length;
     if (!isValid) return res.status(400).send("Bad request");
-    const orderSeq = nanoid();
+    const order = await prisma.order.findFirst({
+      where: {
+        tableId,
+        status: { in: [OrderStatus.PENDING, OrderStatus.COOKING] },
+      },
+    });
+    const orderSeq = order ? order.orderSeq : nanoid();
     for (const item of cartItems) {
       const cartItem = item as CartItem;
       const hasAddons = cartItem.addons.length > 0;
@@ -26,6 +32,7 @@ export default async function handler(
               addonId: addon.id,
               quantity: cartItem.quantity,
               orderSeq,
+              itemId: cartItem.id,
               status: OrderStatus.PENDING,
               totalPrice: getCartTotalPrice(cartItems),
               tableId,
@@ -38,6 +45,7 @@ export default async function handler(
             menuId: cartItem.menu.id,
             quantity: cartItem.quantity,
             orderSeq,
+            itemId: cartItem.id,
             status: OrderStatus.PENDING,
             totalPrice: getCartTotalPrice(cartItems),
             tableId,
@@ -45,6 +53,23 @@ export default async function handler(
         });
       }
     }
+    const orders = await prisma.order.findMany({ where: { orderSeq } });
+    return res.status(200).json({ orders });
+  } else if (method === "PUT") {
+    const itemId = req.query.itemId;
+    const status = req.body.status as OrderStatus;
+    const isValid = itemId && status;
+    if (!isValid) return res.status(400).send("Bad request");
+    const orderToUpdate = await prisma.order.findFirst({
+      where: { itemId: String(itemId) },
+    });
+    if (!orderToUpdate) return res.status(400).send("Bad request");
+    const orderSeq = orderToUpdate.orderSeq;
+    await prisma.order.updateMany({
+      where: { itemId: String(itemId) },
+      data: { status },
+    });
+
     const orders = await prisma.order.findMany({ where: { orderSeq } });
     return res.status(200).json({ orders });
   }

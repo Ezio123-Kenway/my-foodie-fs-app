@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Addon, AddonCategory } from "@prisma/client";
 import { CartItem } from "@/types/cart";
-import { generateRandomId } from "@/utils/generals";
 import { addToCart, updateQuantityInCart } from "@/store/slices/cartSlice";
+import { nanoid } from "nanoid";
 
 const MenuDetailPage = () => {
   const { query, isReady, ...router } = useRouter();
@@ -92,7 +92,7 @@ const MenuDetailPage = () => {
   const handleAddToCart = () => {
     if (!menu) return;
     const newCartItem: CartItem = {
-      id: cartItem ? cartItem.id : generateRandomId(),
+      id: cartItem ? cartItem.id : nanoid(7),
       menu,
       addons: selectedAddons,
       quantity,
