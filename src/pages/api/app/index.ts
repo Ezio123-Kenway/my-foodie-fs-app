@@ -69,11 +69,11 @@ export default async function handler(
         },
       });
 
-      const tables = (
+      const tableIds = (
         await prisma.table.findMany({ where: { locationId: location.id } })
       ).map((item) => item.id);
       const orders = await prisma.order.findMany({
-        where: { tableId: { in: tables } },
+        where: { tableId: { in: tableIds } },
       });
 
       return res.status(200).json({
