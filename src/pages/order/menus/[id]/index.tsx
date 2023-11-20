@@ -146,7 +146,7 @@ const MenuDetailPage = () => {
             variant="contained"
             disabled={isDisabled}
             onClick={() => {
-              !handleSameCartItem(menuId, selectedAddons)
+              !handleSameCartItem(menuId, selectedAddons) || cartItemId
                 ? handleAddToCart()
                 : handleUpdateQuantity();
             }}
