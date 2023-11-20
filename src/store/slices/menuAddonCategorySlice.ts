@@ -33,7 +33,6 @@ export const menuAddonCategorySlice = createSlice({
         (item) => item.addonCategoryId !== addonCategoryId
       );
       state.items = [...otherMenuAddonCategory, ...action.payload];
-      console.log(state.items);
     },
     removeMenuAddonCategoriesByAddonCategoryId: (
       state,

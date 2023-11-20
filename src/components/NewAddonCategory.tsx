@@ -55,7 +55,6 @@ export const NewAddonCategory = ({ open, setOpen }: Props) => {
   };
 
   const handleCreateAddonCategory = () => {
-    console.log(newAddonCategory);
     dispatch(createAddonCategory({ ...newAddonCategory, onSuccess }));
   };
 

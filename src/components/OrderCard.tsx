@@ -2,13 +2,22 @@ import { useAppSelector } from "@/store/hooks";
 import { OrderItem } from "@/types/order";
 import { Box, Card, MenuItem, Select, Typography } from "@mui/material";
 import { AddonCategory, OrderStatus } from "@prisma/client";
+import { useState } from "react";
 
 interface Props {
   orderItem: OrderItem;
   isAdmin: boolean;
+  handleOrderStatusUpdate: (itemId: string, status: OrderStatus) => void;
 }
 
-export const OrderCard = ({ orderItem, isAdmin }: Props) => {
+export const OrderCard = ({
+  orderItem,
+  isAdmin,
+  handleOrderStatusUpdate,
+}: Props) => {
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>(
+    OrderStatus.PENDING
+  );
   const addonCategories = useAppSelector((state) => state.addonCategory.items);
 
   return (
@@ -38,7 +47,7 @@ export const OrderCard = ({ orderItem, isAdmin }: Props) => {
           <Typography sx={{ fontWeight: "bold" }}>itemId:</Typography>
           <Typography>{orderItem.itemId}</Typography>
         </Box>
-        <Box sx={{ height: 250 * 0.6, scroll: "flow" }}>
+        <Box sx={{ height: 250 * 0.6, overflow: "scroll" }}>
           {orderItem.orderAddons.map((orderAddon) => {
             const addonCategory = addonCategories.find(
               (item) => item.id === orderAddon.addonCategoryId
@@ -78,7 +87,18 @@ export const OrderCard = ({ orderItem, isAdmin }: Props) => {
         >
           <Typography sx={{ fontWeight: "bold" }}>Status:</Typography>
           {isAdmin ? (
-            <Select sx={{ height: 30 }} value={orderItem.status} label="Status">
+            <Select
+              sx={{ height: 30 }}
+              value={orderItem.status}
+              label="Status"
+              onChange={(evt) => {
+                handleOrderStatusUpdate(
+                  orderItem.itemId,
+                  evt.target.value as OrderStatus
+                ),
+                  setOrderStatus(evt.target.value as OrderStatus);
+              }}
+            >
               <MenuItem value={OrderStatus.PENDING}>
                 {OrderStatus.PENDING}
               </MenuItem>

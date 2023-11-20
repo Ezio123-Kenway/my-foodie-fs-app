@@ -28,17 +28,17 @@ export const formatOrders = (orders: Order[], addons: Addon[]) => {
     addonIds.forEach((addonId) => {
       const addon = addons.find((element) => element.id === addonId) as Addon;
       const exist = orderAddons.find(
-        (item) => item.addonCategeoryId === addon.addonCategoryId
+        (item) => item.addonCategoryId === addon.addonCategoryId
       );
       if (exist) {
         orderAddons = orderAddons.map((orderAddon) =>
-          orderAddon.addonCategeoryId === addon.addonCategoryId
+          orderAddon.addonCategoryId === addon.addonCategoryId
             ? { ...orderAddon, addons: [...orderAddon.addons, addon] }
             : orderAddon
         );
       } else {
         orderAddons.push({
-          addonCategeoryId: addon.addonCategoryId,
+          addonCategoryId: addon.addonCategoryId,
           addons: [addon],
         });
       }

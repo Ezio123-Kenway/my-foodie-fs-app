@@ -41,7 +41,6 @@ export const NewTable = ({ open, setOpen }: Props) => {
   };
 
   const handleCreateTable = () => {
-    console.log("newTable: ", newTable);
     dispatch(
       createTable({
         ...newTable,

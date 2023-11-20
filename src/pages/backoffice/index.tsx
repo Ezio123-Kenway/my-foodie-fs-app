@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 export default function Home() {
   const { data } = useSession();
   const router = useRouter();
-  // console.log("session: ", data);
   if (!data) {
     return (
       <Box

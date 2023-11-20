@@ -38,7 +38,6 @@ export const NewLocation = ({ open, setOpen }: Props) => {
   };
 
   const handleCreateLocation = () => {
-    console.log("newLocation: ", newLocation);
     dispatch(createLocation({ ...newLocation, onSuccess }));
   };
 

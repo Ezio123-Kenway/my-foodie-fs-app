@@ -8,7 +8,6 @@ import EggIcon from "@mui/icons-material/Egg";
 const AddonsPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const addons = useAppSelector((state) => state.addon.items);
-  console.log("addons: ", addons);
 
   return (
     <Box>

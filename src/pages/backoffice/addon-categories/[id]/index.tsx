@@ -36,8 +36,6 @@ const AddonCategoryDetailPage = () => {
     (item) => item.id === addonCategoryId
   );
 
-  console.log(addonCategory?.isRequired);
-
   const menuIds = menuAddonCategories
     .filter(
       (menuAddonCategory) =>
