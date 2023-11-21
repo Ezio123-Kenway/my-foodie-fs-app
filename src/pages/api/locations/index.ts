@@ -16,16 +16,16 @@ export default async function handler(
   if (!dbUser) return res.status(401).send("Unauthorized");
   const companyId = dbUser.companyId;
   if (method === "POST") {
-    const { name, address } = req.body;
-    const isValid = name && address;
+    const { name, street, township, city } = req.body;
+    const isValid = name && street && township && city;
     if (!isValid) return res.status(400).send("Bad request");
     const newLocation = await prisma.location.create({
-      data: { name, address, companyId },
+      data: { name, street, township, city, companyId },
     });
     return res.status(200).json({ newLocation });
   } else if (method === "PUT") {
-    const { id, name, address } = req.body;
-    const isValid = id && name && address;
+    const { id, name, street, township, city } = req.body;
+    const isValid = id && name && street && township && city;
     if (!isValid) return res.status(400).send("Bad request");
     const locationToUpdate = await prisma.location.findUnique({
       where: { id },
@@ -33,7 +33,7 @@ export default async function handler(
     if (!locationToUpdate) return res.status(400).send("Bad request");
     const updatedLocation = await prisma.location.update({
       where: { id },
-      data: { name, address },
+      data: { name, street, township, city },
     });
     return res.status(200).json({ updatedLocation });
   } else if (method === "DELETE") {

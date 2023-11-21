@@ -1,6 +1,6 @@
 import { CartItem } from "@/types/cart";
 import { OrderAddon, OrderItem } from "@/types/order";
-import { Addon, Order } from "@prisma/client";
+import { Addon, Menu, Order, Table } from "@prisma/client";
 
 export const getCartTotalPrice = (cartItems: CartItem[]) => {
   const totalPrice = cartItems.reduce((prev, curr) => {
@@ -15,8 +15,14 @@ export const getCartTotalPrice = (cartItems: CartItem[]) => {
   return totalPrice;
 };
 
-export const formatOrders = (orders: Order[], addons: Addon[]) => {
+export const formatOrders = (
+  orders: Order[],
+  addons: Addon[],
+  menus: Menu[],
+  tables: Table[]
+) => {
   const itemIds: string[] = [];
+
   orders.forEach((order) => {
     const exist = itemIds.find((itemId) => itemId === order.itemId);
     if (!exist) itemIds.push(order.itemId);
@@ -33,17 +39,32 @@ export const formatOrders = (orders: Order[], addons: Addon[]) => {
       if (exist) {
         orderAddons = orderAddons.map((orderAddon) =>
           orderAddon.addonCategoryId === addon.addonCategoryId
-            ? { ...orderAddon, addons: [...orderAddon.addons, addon] }
+            ? {
+                ...orderAddon,
+                addons: [...orderAddon.addons, addon].sort((a, b) =>
+                  a.name.localeCompare(b.name)
+                ),
+              }
             : orderAddon
         );
       } else {
         orderAddons.push({
           addonCategoryId: addon.addonCategoryId,
-          addons: [addon],
+          addons: [addon].sort((a, b) => a.name.localeCompare(b.name)),
         });
       }
     });
-    return { itemId, status: relatedOrders[0].status, orderAddons };
+    return {
+      itemId,
+      status: relatedOrders[0].status,
+      orderAddons: orderAddons.sort(
+        (a, b) => a.addonCategoryId - b.addonCategoryId
+      ),
+      menu: menus.find((item) => item.id === relatedOrders[0].menuId) as Menu,
+      table: tables.find(
+        (item) => item.id === relatedOrders[0].tableId
+      ) as Table,
+    };
   });
-  return orderItems;
+  return orderItems.sort((a, b) => a.itemId.localeCompare(b.itemId));
 };

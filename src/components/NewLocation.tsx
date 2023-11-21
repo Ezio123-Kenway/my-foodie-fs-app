@@ -19,7 +19,9 @@ interface Props {
 
 const defaultLocation = {
   name: "",
-  address: "",
+  street: "",
+  township: "",
+  city: "",
   companyId: undefined,
 };
 
@@ -28,7 +30,11 @@ export const NewLocation = ({ open, setOpen }: Props) => {
     useState<CreateLocationOptions>(defaultLocation);
   const dispatch = useAppDispatch();
 
-  const canCreate = newLocation.name && newLocation.address;
+  const canCreate =
+    newLocation.name &&
+    newLocation.street &&
+    newLocation.township &&
+    newLocation.city;
 
   const onSuccess = () => {
     setOpen(false);
@@ -65,17 +71,39 @@ export const NewLocation = ({ open, setOpen }: Props) => {
             }
           ></TextField>
           <TextField
-            id="Address"
-            label="Address"
+            id="Street"
+            label="Street"
             variant="outlined"
             type="string"
-            sx={{ mt: 4, mb: 2, width: "100%" }}
-            defaultValue={defaultLocation.address}
+            sx={{ mt: 4, width: "100%" }}
+            defaultValue={defaultLocation.street}
             onChange={(evt) =>
-              setNewLocation({ ...newLocation, address: evt.target.value })
+              setNewLocation({ ...newLocation, street: evt.target.value })
             }
           ></TextField>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          <TextField
+            id="Township"
+            label="Township"
+            variant="outlined"
+            type="string"
+            sx={{ mt: 4, width: "100%" }}
+            defaultValue={defaultLocation.township}
+            onChange={(evt) =>
+              setNewLocation({ ...newLocation, township: evt.target.value })
+            }
+          ></TextField>
+          <TextField
+            id="City"
+            label="City"
+            variant="outlined"
+            type="string"
+            sx={{ mt: 4, width: "100%" }}
+            defaultValue={defaultLocation.city}
+            onChange={(evt) =>
+              setNewLocation({ ...newLocation, city: evt.target.value })
+            }
+          ></TextField>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
             <Button
               variant="contained"
               sx={{ width: "fit-content" }}

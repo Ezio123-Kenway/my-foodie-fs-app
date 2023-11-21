@@ -1,55 +1,97 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setSelectedLocation } from "@/store/slices/locationSlice";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { updateCompany } from "@/store/slices/companySlice";
+import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
+import { UpdateCompanyOptions } from "@/types/company";
+import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const SettingsPage = () => {
-  const locations = useAppSelector((state) => state.location.items);
-  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
+  const [updatedCompany, setUpdatedCompany] = useState<
+    UpdateCompanyOptions | undefined
+  >();
   const dispatch = useAppDispatch();
+  const company = useAppSelector((state) => state.company.item);
 
   useEffect(() => {
-    if (locations.length) {
-      const selectedLocationId = localStorage.getItem("selectedLocationId");
-      if (selectedLocationId) {
-        setSelectedLocationId(selectedLocationId);
-      }
+    if (company) {
+      setUpdatedCompany({
+        id: company.id,
+        name: company.name,
+        street: company.street,
+        township: company.township,
+        city: company.city,
+      });
     }
-  }, [locations]);
+  }, [company]);
 
-  const handleLocationChange = (evt: SelectChangeEvent<number>) => {
-    const id = evt.target.value as number;
-    localStorage.setItem("selectedLocationId", String(id));
-    setSelectedLocationId(String(id));
-    const location = locations.find((item) => item.id === id);
-    location && dispatch(setSelectedLocation(location));
+  if (!company || !updatedCompany) return null;
+
+  const handleUpdateCompany = () => {
+    dispatch(
+      updateCompany({
+        ...updatedCompany,
+        onSuccess: () =>
+          dispatch(
+            setOpenSnackbar({ message: "Updated company successfully.." })
+          ),
+      })
+    );
   };
-
-  if (!selectedLocationId) return null;
 
   return (
     <Box>
-      <FormControl fullWidth>
-        <InputLabel>Location</InputLabel>
-        <Select
-          value={Number(selectedLocationId)}
-          label="Location"
-          onChange={handleLocationChange}
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%" }}
+          defaultValue={company.name}
+          onChange={(evt) =>
+            setUpdatedCompany({ ...updatedCompany, name: evt.target.value })
+          }
+        ></TextField>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%", mt: 4 }}
+          defaultValue={company.street}
+          onChange={(evt) =>
+            setUpdatedCompany({ ...updatedCompany, street: evt.target.value })
+          }
+        ></TextField>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%", mt: 4 }}
+          defaultValue={company.township}
+          onChange={(evt) =>
+            setUpdatedCompany({ ...updatedCompany, township: evt.target.value })
+          }
+        ></TextField>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%", mt: 4 }}
+          defaultValue={company.city}
+          onChange={(evt) =>
+            setUpdatedCompany({ ...updatedCompany, city: evt.target.value })
+          }
+        ></TextField>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={
+            !updatedCompany.name ||
+            !updatedCompany.street ||
+            !updatedCompany.township ||
+            !updatedCompany.city
+          }
+          onClick={handleUpdateCompany}
+          sx={{ mt: 3, width: "fit-content" }}
         >
-          {locations.map((location) => (
-            <MenuItem key={location.id} value={location.id}>
-              {location.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          Update
+        </Button>
+      </Box>
     </Box>
   );
 };

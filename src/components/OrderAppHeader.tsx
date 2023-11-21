@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/store/hooks";
 import Home from "@mui/icons-material/Home";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import { Box, Typography } from "@mui/material";
@@ -13,8 +14,11 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
   const router = useRouter();
   const isHome = router.pathname === "/order";
   const isCart = router.pathname === "/order/cart";
-  const isActiveOrder = router.pathname.includes("/order/activeOrder");
+  const isActiveOrder = router.pathname.includes("/order/active-order");
   const isCartOrActiveOrderPage = isCart || isActiveOrder;
+  const company = useAppSelector((state) => state.company.item);
+
+  if (!company) return null;
 
   return (
     <Box
@@ -97,14 +101,14 @@ const OrderAppHeader = ({ cartItemCount }: Props) => {
                 mt: 15,
               }}
             >
-              Ah Wa Sarr
+              {company.name}
             </Typography>
             <Typography
               variant="body1"
               sx={{ fontStyle: "italic", lineHeight: 1.2 }}
             >
-              Hintada Street 39
-              <br /> Sanchaung, Yangon
+              {company.street}
+              <br /> {company.township}, {company.city}
             </Typography>
           </Box>
         </Box>

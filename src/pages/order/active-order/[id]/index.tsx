@@ -1,22 +1,52 @@
 import { OrderCard } from "@/components/OrderCard";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { updateOrder } from "@/store/slices/orderSlice";
+import { refreshOrder } from "@/store/slices/orderSlice";
 import { formatOrders } from "@/utils/generals";
-import { Box } from "@mui/material";
-import { OrderStatus } from "@prisma/client";
+import { Box, Typography } from "@mui/material";
+import { Order } from "@prisma/client";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const ActiveOrder = () => {
   const router = useRouter();
   const orderSeq = router.query.id;
   const orders = useAppSelector((state) => state.order.items);
   const addons = useAppSelector((state) => state.addon.items);
-  const orderItems = formatOrders(orders, addons);
+  const menus = useAppSelector((state) => state.menu.items);
+  const tables = useAppSelector((state) => state.table.items);
+  const orderItems = formatOrders(orders, addons, menus, tables);
   const dispatch = useAppDispatch();
+  let intervalId: number;
 
-  const handleOrderStatusUpdate = (itemId: string, status: OrderStatus) => {
-    dispatch(updateOrder({ itemId, status }));
+  useEffect(() => {
+    if (orderSeq) {
+      intervalId = window.setInterval(handleRefreshOrder, 3000);
+    }
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [orderSeq]);
+
+  const handleRefreshOrder = () => {
+    dispatch(refreshOrder({ orderSeq: String(orderSeq) }));
   };
+
+  const getOrderTotalPrice = (orders: Order[]) => {
+    const itemIds: string[] = [];
+    orders.forEach((order) => {
+      const exist = itemIds.find((itemId) => itemId === order.itemId);
+      if (!exist) itemIds.push(order.itemId);
+    });
+    let orderTotalPrice = 0;
+    itemIds.forEach((itemId) => {
+      const totalPrice = orders.filter((order) => order.itemId === itemId)[0]
+        .totalPrice;
+      orderTotalPrice += totalPrice;
+    });
+    return orderTotalPrice;
+  };
+
+  if (!orders.length) return null;
 
   return (
     <Box
@@ -29,6 +59,8 @@ const ActiveOrder = () => {
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           justifyContent: "center",
           p: 3,
           bgcolor: "#E8F6EF",
@@ -36,7 +68,12 @@ const ActiveOrder = () => {
           mx: 3,
         }}
       >
-        OrderSeq: {orderSeq}
+        <Typography sx={{ fontWeight: "bold" }} variant="h6">
+          OrderSeq: {orderSeq}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="h6">
+          TotalPrice: {getOrderTotalPrice(orders)}
+        </Typography>
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {orderItems.map((orderItem) => {
@@ -45,7 +82,6 @@ const ActiveOrder = () => {
               key={orderItem.itemId}
               orderItem={orderItem}
               isAdmin={false}
-              handleOrderStatusUpdate={handleOrderStatusUpdate}
             />
           );
         })}

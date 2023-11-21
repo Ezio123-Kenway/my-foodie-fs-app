@@ -10,7 +10,17 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const method = req.method;
-  if (method === "POST") {
+  if (method === "GET") {
+    const orderSeq = req.query.orderSeq;
+    const isValid = orderSeq;
+    if (!isValid) return res.status(400).send("Bad request");
+    const orders = await prisma.order.findMany({
+      where: { orderSeq: String(orderSeq) },
+    });
+    if (!orders.length) return res.status(400).send("Bad request");
+
+    return res.status(200).json({ orders });
+  } else if (method === "POST") {
     const { tableId, cartItems } = req.body;
     const isValid = tableId && cartItems.length;
     if (!isValid) return res.status(400).send("Bad request");
@@ -53,7 +63,10 @@ export default async function handler(
         });
       }
     }
-    const orders = await prisma.order.findMany({ where: { orderSeq } });
+    const orders = await prisma.order.findMany({
+      where: { orderSeq, isArchived: false },
+      orderBy: { id: "asc" },
+    });
     return res.status(200).json({ orders });
   } else if (method === "PUT") {
     const itemId = req.query.itemId;
@@ -68,7 +81,10 @@ export default async function handler(
       where: { itemId: String(itemId) },
       data: { status: req.body.status as OrderStatus },
     });
-    const orders = await prisma.order.findMany({ where: { orderSeq } });
+    const orders = await prisma.order.findMany({
+      where: { orderSeq, isArchived: false },
+      orderBy: { id: "asc" },
+    });
     return res.status(200).json({ orders });
   }
   res.status(405).send("Invalid method..");

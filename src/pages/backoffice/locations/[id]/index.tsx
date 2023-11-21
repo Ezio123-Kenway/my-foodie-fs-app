@@ -3,21 +3,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { updateLocation } from "@/store/slices/locationSlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import { UpdateLocationOptions } from "@/types/location";
-import {
-  Box,
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  ListItemText,
-} from "@mui/material";
-import { AddonCategory } from "@prisma/client";
+import { Box, Button, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import addonCategories from "../../addon-categories";
 
 const LocationDetailPage = () => {
   const [updatedLocation, setUpdatedLocation] = useState<
@@ -35,7 +23,9 @@ const LocationDetailPage = () => {
       setUpdatedLocation({
         id: location.id,
         name: location.name,
-        address: location.address,
+        street: location.street,
+        township: location.township,
+        city: location.city,
         companyId: location.companyId,
       });
     }
@@ -43,7 +33,11 @@ const LocationDetailPage = () => {
 
   if (!location || !updatedLocation) return null;
 
-  const canUpdate = updatedLocation.name && updatedLocation.address;
+  const canUpdate =
+    updatedLocation.name &&
+    updatedLocation.street &&
+    updatedLocation.township &&
+    updatedLocation.city;
 
   const handleUpdateLocation = () => {
     dispatch(
@@ -72,7 +66,7 @@ const LocationDetailPage = () => {
         <TextField
           variant="outlined"
           type="string"
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", mb: 3 }}
           defaultValue={location.name}
           onChange={(evt) =>
             setUpdatedLocation({ ...updatedLocation, name: evt.target.value })
@@ -82,11 +76,35 @@ const LocationDetailPage = () => {
           variant="outlined"
           type="string"
           sx={{ width: "100%", my: 3 }}
-          defaultValue={location.address}
+          defaultValue={location.street}
           onChange={(evt) =>
             setUpdatedLocation({
               ...updatedLocation,
-              address: evt.target.value,
+              street: evt.target.value,
+            })
+          }
+        ></TextField>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%", my: 3 }}
+          defaultValue={location.township}
+          onChange={(evt) =>
+            setUpdatedLocation({
+              ...updatedLocation,
+              township: evt.target.value,
+            })
+          }
+        ></TextField>
+        <TextField
+          variant="outlined"
+          type="string"
+          sx={{ width: "100%", my: 3 }}
+          defaultValue={location.city}
+          onChange={(evt) =>
+            setUpdatedLocation({
+              ...updatedLocation,
+              city: evt.target.value,
             })
           }
         ></TextField>

@@ -1,4 +1,4 @@
-import { Addon, Order, OrderStatus } from "@prisma/client";
+import { Addon, Menu, Order, OrderStatus, Table } from "@prisma/client";
 import { BaseOptions } from "./app";
 import { CartItem } from "./cart";
 
@@ -18,6 +18,10 @@ export interface UpdateOrderOptions extends BaseOptions {
   status: OrderStatus;
 }
 
+export interface RefreshOrderOptions extends BaseOptions {
+  orderSeq: string;
+}
+
 export interface OrderAddon {
   addonCategoryId: number;
   addons: Addon[];
@@ -27,4 +31,6 @@ export interface OrderItem {
   itemId: string;
   status: OrderStatus;
   orderAddons: OrderAddon[];
+  menu: Menu;
+  table: Table;
 }

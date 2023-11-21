@@ -10,14 +10,18 @@ export interface LocationSliceState {
 
 export interface CreateLocationOptions extends BaseOptions {
   name: string;
-  address: string;
+  street: string;
+  township: string;
+  city: string;
   companyId: number | undefined;
 }
 
 export interface UpdateLocationOptions extends BaseOptions {
   id: number;
   name: string;
-  address: string;
+  street: string;
+  township: string;
+  city: string;
   companyId: number | undefined;
 }
 

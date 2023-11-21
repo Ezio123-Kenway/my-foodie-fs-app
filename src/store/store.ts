@@ -13,6 +13,7 @@ import disabledLocationMenuCategoryReducer from "./slices/disabledLocationMenuCa
 import disabledLocationMenuReducer from "./slices/disabledLocationMenuSlice";
 import cartReducer from "./slices/cartSlice";
 import orderReducer from "./slices/orderSlice";
+import companyReducer from "./slices/companySlice";
 // ...
 
 export const store = configureStore({
@@ -31,6 +32,7 @@ export const store = configureStore({
     snackBar: snackBarReducer,
     cart: cartReducer,
     order: orderReducer,
+    company: companyReducer,
   },
 });
 
