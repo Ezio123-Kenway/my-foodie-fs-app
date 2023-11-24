@@ -13,7 +13,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const menuCategoryDetailPage = () => {
+const MenuCategoryDetailPage = () => {
   const [updatedMenuCategory, setUpdatedMenuCategory] = useState<
     UpdateMenuCategoryOptions | undefined
   >();
@@ -118,4 +118,4 @@ const menuCategoryDetailPage = () => {
   );
 };
 
-export default menuCategoryDetailPage;
+export default MenuCategoryDetailPage;
