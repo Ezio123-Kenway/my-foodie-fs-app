@@ -102,7 +102,7 @@ export const NewAddon = ({ open, setOpen }: Props) => {
               value={newAddon.addonCategoryId || ""}
               input={<OutlinedInput label="Addon Category" />}
               onChange={handleOnChange}
-              sx={{ width: 400 }}
+              sx={{ width: "100%" }}
               renderValue={(addonCategoryId) => {
                 return (
                   addonCategories.find(

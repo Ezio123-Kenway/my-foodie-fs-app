@@ -8,7 +8,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
 import { Addon, Order } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Cart = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -71,7 +70,7 @@ const Cart = () => {
         borderRadius: 15,
         mx: 3,
         position: "relative",
-        top: 150,
+        top: { xs: 50, sm: 150 },
         zIndex: 5,
       }}
     >
@@ -83,8 +82,7 @@ const Cart = () => {
         >
           <Typography
             color={"primary"}
-            variant="h4"
-            sx={{ textAlign: "center", mb: 3 }}
+            sx={{ textAlign: "center", mb: 3, fontSize: { xs: 21, sm: 26 } }}
           >
             Review your order
           </Typography>
@@ -148,7 +146,7 @@ const Cart = () => {
           })}
           <Divider />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Typography variant="h4" color="primary">
+            <Typography color="primary" sx={{ fontSize: { xs: 21, sm: 25 } }}>
               Total: {getCartTotalPrice(cartItems)}
             </Typography>
           </Box>

@@ -56,7 +56,7 @@ export const NewLocation = ({ open, setOpen }: Props) => {
             display: "flex",
             flexDirection: "column",
             alignItems: "centers",
-            width: 400,
+            width: { xs: "100%", sm: 400 },
           }}
         >
           <TextField

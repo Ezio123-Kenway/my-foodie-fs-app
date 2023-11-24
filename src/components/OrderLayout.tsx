@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import OrderAppHeader from "./OrderAppHeader";
 import { CartItem } from "@/types/cart";
-import { Order } from "@prisma/client";
+import { Order, OrderStatus } from "@prisma/client";
 
 interface Props {
   children: string | JSX.Element | JSX.Element[];
@@ -19,6 +19,9 @@ const OrderLayout = ({ children }: Props) => {
   const isHome = router.pathname === "/order";
   const isActiveOrderPage = router.pathname.includes("active-order");
   const orders = useAppSelector((state) => state.order.items);
+  const showActiveOrderFooterBar =
+    !isActiveOrderPage &&
+    orders.some((order) => order.status !== OrderStatus.COMPLETE);
 
   const getTotalCount = (cartItems: CartItem[]) => {
     const totalCount = cartItems.reduce(
@@ -40,16 +43,15 @@ const OrderLayout = ({ children }: Props) => {
       <Box
         sx={{
           position: "relative",
-          top: isHome ? 240 : 0,
-          width: "100%",
-          height: "100vh",
+          top: isHome ? { sm: 240 } : 0,
+          mb: 30,
         }}
       >
         <Box sx={{ width: { xs: "100%", md: "80%", lg: "55%" }, m: "0 auto" }}>
           {children}
         </Box>
       </Box>
-      {orders.length && !isActiveOrderPage && (
+      {showActiveOrderFooterBar && (
         <Box
           sx={{
             position: "fixed",
@@ -61,6 +63,7 @@ const OrderLayout = ({ children }: Props) => {
             justifyContent: "center",
             alignItems: "center",
             cursor: "pointer",
+            zIndex: 5,
           }}
           onClick={() => {
             router.push({
@@ -69,10 +72,7 @@ const OrderLayout = ({ children }: Props) => {
             });
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ color: "secondary.main", userSelect: "none" }}
-          >
+          <Typography sx={{ color: "secondary.main", userSelect: "none" }}>
             You have active order. Click here to view.
           </Typography>
         </Box>

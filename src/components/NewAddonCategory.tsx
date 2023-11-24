@@ -99,7 +99,7 @@ export const NewAddonCategory = ({ open, setOpen }: Props) => {
               value={newAddonCategory.menuIds}
               input={<OutlinedInput label="Menu" />}
               onChange={handleOnChange}
-              sx={{ width: 400 }}
+              sx={{ width: "100%" }}
               renderValue={(menuIds) => {
                 return menus
                   .filter((menu) => menuIds.includes(menu.id))

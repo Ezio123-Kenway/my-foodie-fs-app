@@ -52,8 +52,9 @@ const ActiveOrder = () => {
     <Box
       sx={{
         position: "relative",
-        top: 150,
+        top: { xs: 30, sm: 150 },
         zIndex: 5,
+        px: 2,
       }}
     >
       <Box
@@ -68,14 +69,14 @@ const ActiveOrder = () => {
           mx: 3,
         }}
       >
-        <Typography sx={{ fontWeight: "bold" }} variant="h6">
+        <Typography sx={{ fontWeight: "bold" }}>
           OrderSeq: {orderSeq}
         </Typography>
-        <Typography sx={{ fontWeight: "bold" }} variant="h6">
+        <Typography sx={{ fontWeight: "bold" }}>
           TotalPrice: {getOrderTotalPrice(orders)}
         </Typography>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         {orderItems.map((orderItem) => {
           return (
             <OrderCard

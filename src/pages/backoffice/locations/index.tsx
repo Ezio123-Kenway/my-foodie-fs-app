@@ -24,20 +24,22 @@ const LocationsPage = () => {
           Create location
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          {locations.map((location) => (
-            <ItemCard
-              key={location.id}
-              title={location.name}
-              icon={<LocationOnIcon />}
-              selected={location.id === selectedLocation?.id}
-              handleSelectLocation={() =>
-                dispatch(setSelectedLocation(location))
-              }
-            />
-          ))}
-        </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
+        {locations.map((location) => (
+          <ItemCard
+            key={location.id}
+            title={location.name}
+            icon={<LocationOnIcon />}
+            selected={location.id === selectedLocation?.id}
+            handleSelectLocation={() => dispatch(setSelectedLocation(location))}
+          />
+        ))}
       </Box>
       <NewLocation open={open} setOpen={setOpen} />
     </Box>

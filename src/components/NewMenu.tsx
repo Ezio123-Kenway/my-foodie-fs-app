@@ -118,7 +118,7 @@ export const NewMenu = ({ open, setOpen }: Props) => {
               value={newMenu.menuCategoryIds}
               input={<OutlinedInput label="Menu Category" />}
               onChange={handleOnChange}
-              sx={{ width: 400 }}
+              sx={{ width: "100%" }}
               renderValue={(menuCategoryIds) => {
                 return menuCategories
                   .filter((menuCategory) =>

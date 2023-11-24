@@ -22,7 +22,14 @@ const MenusPage = () => {
           Create menu
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+          mt: 2,
+        }}
+      >
         {menus.map((menu) => {
           const exist = disabledLocationMenus.find(
             (item) =>

@@ -76,13 +76,21 @@ export default async function handler(
       where: { itemId: String(itemId) },
     });
     if (!exist) return res.status(400).send("Bad request");
-    const orderSeq = exist.orderSeq;
+    const table = await prisma.table.findUnique({
+      where: { id: exist.tableId },
+    });
+    const location = await prisma.location.findUnique({
+      where: { id: table?.locationId },
+    });
+    const tableIds = (
+      await prisma.table.findMany({ where: { locationId: location?.id } })
+    ).map((item) => item.id);
     await prisma.order.updateMany({
       where: { itemId: String(itemId) },
       data: { status: req.body.status as OrderStatus },
     });
     const orders = await prisma.order.findMany({
-      where: { orderSeq, isArchived: false },
+      where: { tableId: { in: tableIds }, isArchived: false },
       orderBy: { id: "asc" },
     });
     return res.status(200).json({ orders });

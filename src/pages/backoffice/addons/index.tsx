@@ -20,7 +20,13 @@ const AddonsPage = () => {
           Create addon
         </Button>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
         {addons.map((addon) => (
           <ItemCard
             href={`/backoffice/addons/${addon.id}`}

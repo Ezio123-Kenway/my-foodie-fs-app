@@ -41,7 +41,13 @@ export const NewMenuCategory = ({ open, setOpen }: Props) => {
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>Create new menu category</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", justifyContent: "center", width: 300 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: { xs: "100%", sm: 300 },
+          }}
+        >
           <TextField
             variant="outlined"
             autoFocus

@@ -12,24 +12,18 @@ const OrdersPage = () => {
   const addons = useAppSelector((state) => state.addon.items);
   const menus = useAppSelector((state) => state.menu.items);
   const tables = useAppSelector((state) => state.table.items);
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const dispatch = useAppDispatch();
   const [value, setValue] = useState<OrderStatus>(OrderStatus.PENDING);
   const [filteredOrderItems, setFilteredOrderItems] = useState<OrderItem[]>([]);
 
   useEffect(() => {
-    if (value && orderItems.length) {
+    if (value && orders.length) {
+      const orderItems = formatOrders(orders, addons, menus, tables);
       setFilteredOrderItems(
         orderItems.filter((orderItem) => orderItem.status === value)
       );
     }
-  }, [value]);
-
-  useEffect(() => {
-    if (orders.length) {
-      setOrderItems(formatOrders(orders, addons, menus, tables));
-    }
-  }, [orders]);
+  }, [value, orders]);
 
   const handleOrderStatusUpdate = (itemId: string, status: OrderStatus) => {
     dispatch(updateOrder({ itemId, status }));
@@ -37,7 +31,12 @@ const OrdersPage = () => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: { xs: "center", sm: "flex-end" },
+        }}
+      >
         <ToggleButtonGroup
           color="primary"
           value={value}
@@ -55,7 +54,13 @@ const OrdersPage = () => {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: { xs: "center", sm: "flex-start" },
+        }}
+      >
         {filteredOrderItems.length &&
           filteredOrderItems.map((orderItem) => {
             return (

@@ -65,7 +65,7 @@ export const NewTable = ({ open, setOpen }: Props) => {
             label="Name"
             variant="outlined"
             type="string"
-            sx={{ mt: 1, mb: 2, width: 300 }}
+            sx={{ mt: 1, mb: 2, width: { xs: "100%", sm: 300 } }}
             defaultValue={defaultTable.name}
             onChange={(evt) =>
               setNewTable({ ...newTable, name: evt.target.value })

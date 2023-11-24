@@ -58,32 +58,38 @@ export const OrderCard = ({
             <Typography>{orderItem.itemId}</Typography>
           </Box>
           <Box sx={{ height: 250 * 0.6, overflow: "scroll" }}>
-            {orderItem.orderAddons.map((orderAddon) => {
-              const addonCategory = addonCategories.find(
-                (item) => item.id === orderAddon.addonCategoryId
-              ) as AddonCategory;
+            {orderItem.orderAddons.length ? (
+              orderItem.orderAddons.map((orderAddon) => {
+                const addonCategory = addonCategories.find(
+                  (item) => item.id === orderAddon.addonCategoryId
+                ) as AddonCategory;
 
-              return (
-                <Box sx={{ mb: 3 }} key={orderAddon.addonCategoryId}>
-                  <Typography>{addonCategory.name}</Typography>
-                  {orderAddon.addons.map((addon) => {
-                    return (
-                      <Typography
-                        key={addon.id}
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          fontStyle: "italic",
-                          ml: 2,
-                        }}
-                      >
-                        {addon.name}
-                      </Typography>
-                    );
-                  })}
-                </Box>
-              );
-            })}
+                return (
+                  <Box sx={{ mb: 3 }} key={orderAddon.addonCategoryId}>
+                    <Typography>{addonCategory.name}</Typography>
+                    {orderAddon.addons.map((addon) => {
+                      return (
+                        <Typography
+                          key={addon.id}
+                          sx={{
+                            fontSize: 14,
+                            fontWeight: "bold",
+                            fontStyle: "italic",
+                            ml: 2,
+                          }}
+                        >
+                          {addon.name}
+                        </Typography>
+                      );
+                    })}
+                  </Box>
+                );
+              })
+            ) : (
+              <Typography sx={{ fontWeight: "bold" }}>
+                No Selected Addon
+              </Typography>
+            )}
           </Box>
           <Box
             sx={{
