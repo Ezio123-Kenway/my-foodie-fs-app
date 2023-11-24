@@ -11,6 +11,7 @@ export const Topbar = () => {
   const { data } = useSession();
   const { selectedLocation } = useAppSelector((state) => state.location);
   const [open, setOpen] = useState<boolean>(false);
+  const showLocation = data && selectedLocation;
 
   return (
     <Box
@@ -39,9 +40,11 @@ export const Topbar = () => {
         <Typography variant="h5" color={"secondary"}>
           Foodie POS
         </Typography>
-        <Typography color={"secondary"} sx={{ fontSize: 13 }}>
-          ({selectedLocation && selectedLocation.name})
-        </Typography>
+        {showLocation && (
+          <Typography color={"secondary"} sx={{ fontSize: 13 }}>
+            ({selectedLocation?.name})
+          </Typography>
+        )}
       </Box>
       <Box>
         {data ? (

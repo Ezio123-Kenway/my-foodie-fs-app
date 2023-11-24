@@ -69,7 +69,9 @@ export const ItemCard = ({
         position: "relative",
         cursor: "pointer",
       }}
-      onClick={() => handleSelectLocation && handleSelectLocation()}
+      onClick={() => {
+        handleSelectLocation && handleSelectLocation();
+      }}
     >
       {selected && (
         <CheckCircleOutlineIcon

@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { refreshOrder } from "@/store/slices/orderSlice";
 import { formatOrders } from "@/utils/generals";
 import { Box, Typography } from "@mui/material";
-import { Order } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -29,21 +28,6 @@ const ActiveOrder = () => {
 
   const handleRefreshOrder = () => {
     dispatch(refreshOrder({ orderSeq: String(orderSeq) }));
-  };
-
-  const getOrderTotalPrice = (orders: Order[]) => {
-    const itemIds: string[] = [];
-    orders.forEach((order) => {
-      const exist = itemIds.find((itemId) => itemId === order.itemId);
-      if (!exist) itemIds.push(order.itemId);
-    });
-    let orderTotalPrice = 0;
-    itemIds.forEach((itemId) => {
-      const totalPrice = orders.filter((order) => order.itemId === itemId)[0]
-        .totalPrice;
-      orderTotalPrice += totalPrice;
-    });
-    return orderTotalPrice;
   };
 
   if (!orders.length) return null;
@@ -73,7 +57,7 @@ const ActiveOrder = () => {
           OrderSeq: {orderSeq}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }}>
-          TotalPrice: {getOrderTotalPrice(orders)}
+          TotalPrice: {orders[0].totalPrice}
         </Typography>
       </Box>
       <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>

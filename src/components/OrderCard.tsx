@@ -2,7 +2,6 @@ import { useAppSelector } from "@/store/hooks";
 import { OrderItem } from "@/types/order";
 import { Box, Card, MenuItem, Select, Typography } from "@mui/material";
 import { AddonCategory, OrderStatus } from "@prisma/client";
-import { useState } from "react";
 
 interface Props {
   orderItem: OrderItem;
