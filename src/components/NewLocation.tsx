@@ -1,4 +1,4 @@
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { createLocation } from "@/store/slices/locationSlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
 import { CreateLocationOptions } from "@/types/location";
@@ -26,15 +26,19 @@ const defaultLocation = {
 };
 
 export const NewLocation = ({ open, setOpen }: Props) => {
-  const [newLocation, setNewLocation] =
-    useState<CreateLocationOptions>(defaultLocation);
+  const company = useAppSelector((state) => state.company.item);
+  const [newLocation, setNewLocation] = useState<CreateLocationOptions>({
+    ...defaultLocation,
+    companyId: company?.id,
+  });
   const dispatch = useAppDispatch();
 
   const canCreate =
     newLocation.name &&
     newLocation.street &&
     newLocation.township &&
-    newLocation.city;
+    newLocation.city &&
+    newLocation.companyId;
 
   const onSuccess = () => {
     setOpen(false);

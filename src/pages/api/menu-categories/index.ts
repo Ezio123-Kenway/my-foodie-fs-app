@@ -1,30 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/utils/db";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) return res.status(401).send("Unauthorized");
-  const user = session.user;
-  const email = user?.email as string;
-  const dbUser = await prisma.user.findUnique({ where: { email } });
-  if (!dbUser) return res.status(401).send("Unauthorized");
   const method = req.method;
   if (method === "POST") {
     const { name, locationId } = req.body;
-    const isValid = name;
+    const isValid = name && locationId;
     if (!isValid) return res.status(400).send("Bad request");
-    // const location = await prisma.location.findUnique({
-    //   where: { id: locationId },
-    // });
-    // if (!location) return res.status(400).send("Bad request");
-    // const companyId = location.companyId;
+    const location = await prisma.location.findUnique({
+      where: { id: locationId },
+    });
+    if (!location) return res.status(400).send("Bad request");
+    const companyId = location.companyId;
     const newMenuCategory = await prisma.menuCategory.create({
-      data: { name, companyId: dbUser.companyId },
+      data: { name, companyId },
     });
     return res.status(200).json({ newMenuCategory });
   } else if (method === "PUT") {

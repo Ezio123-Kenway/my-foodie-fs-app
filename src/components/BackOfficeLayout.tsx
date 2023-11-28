@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { ReactNode, useEffect } from "react";
 import SideBar from "./SideBar";
 import { Topbar } from "./TopBar";
+import { useRouter } from "next/router";
 
 interface Props {
   children: ReactNode;
@@ -12,6 +13,7 @@ interface Props {
 
 export const BackofficeLayout = ({ children }: Props) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { init } = useAppSelector((state) => state.app);
 
@@ -19,6 +21,7 @@ export const BackofficeLayout = ({ children }: Props) => {
     if (session && !init) {
       dispatch(fetchAppData({}));
     }
+    if (!session) router.push("/backoffice");
   }, [session]);
 
   return (
