@@ -1,4 +1,3 @@
-import menuCategories from "@/pages/api/menu-categories";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { createAddon } from "@/store/slices/addonSlice";
 import { setOpenSnackbar } from "@/store/slices/snackBarSlice";
@@ -6,7 +5,6 @@ import { CreateAddonOptions } from "@/types/addon";
 import {
   Box,
   Button,
-  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
