@@ -94,7 +94,7 @@ const MenuDetailPage = () => {
       const file = files[0];
       const formData = new FormData();
       formData.append("files", file);
-      const response = await fetch(`${config.apiBaseUrl}/assets`, {
+      const response = await fetch(`${config.backofficeApiUrl}/assets`, {
         method: "POST",
         body: formData,
       });

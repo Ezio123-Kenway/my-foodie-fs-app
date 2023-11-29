@@ -25,11 +25,14 @@ export const createAddonCategory = createAsyncThunk(
   async (options: CreateAddonCategoryOptions, thunkApi) => {
     const { name, isRequired, menuIds, onSuccess, onError } = options;
     try {
-      const response = await fetch(`${config.apiBaseUrl}/addon-categories`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, isRequired, menuIds }),
-      });
+      const response = await fetch(
+        `${config.backofficeApiUrl}/addon-categories`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ name, isRequired, menuIds }),
+        }
+      );
       const { newAddonCategory, menuAddonCategories } = await response.json();
       thunkApi.dispatch(addAddonCategory(newAddonCategory));
       thunkApi.dispatch(addMenuAddonCategories(menuAddonCategories));
@@ -45,11 +48,14 @@ export const updateAddonCategory = createAsyncThunk(
   async (options: UpdateAddonCategoryOptions, thunkApi) => {
     const { id, name, isRequired, menuIds, onSuccess, onError } = options;
     try {
-      const response = await fetch(`${config.apiBaseUrl}/addon-categories`, {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id, name, isRequired, menuIds }),
-      });
+      const response = await fetch(
+        `${config.backofficeApiUrl}/addon-categories`,
+        {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ id, name, isRequired, menuIds }),
+        }
+      );
       const { updatedAddonCategory, createdMenuAddonCategories } =
         await response.json();
       thunkApi.dispatch(replaceAddonCategory(updatedAddonCategory));
@@ -66,7 +72,7 @@ export const deleteAddonCategory = createAsyncThunk(
   async (options: DeleteAddonCategoryOptions, thunkApi) => {
     const { id, onSuccess, onError } = options;
     try {
-      await fetch(`${config.apiBaseUrl}/addon-categories?id=${id}`, {
+      await fetch(`${config.backofficeApiUrl}/addon-categories?id=${id}`, {
         method: "DELETE",
       });
       thunkApi.dispatch(removeAddonCategory({ id }));

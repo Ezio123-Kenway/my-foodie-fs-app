@@ -26,8 +26,8 @@ export const fetchAppData = createAsyncThunk(
     const { tableId, onSuccess, onError } = options;
     try {
       const appDataUrl = tableId
-        ? `${config.apiBaseUrl}/app?tableId=${tableId}`
-        : `${config.apiBaseUrl}/app`;
+        ? `${config.orderApiUrl}/app?tableId=${tableId}`
+        : `${config.backofficeApiUrl}/app`;
       const response = await fetch(appDataUrl);
       const appData = await response.json();
       const {

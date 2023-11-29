@@ -14,7 +14,7 @@ export const updateCompany = createAsyncThunk(
   async (options: UpdateCompanyOptions, thunkApi) => {
     const { id, name, street, township, city, onSuccess, onError } = options;
     try {
-      const response = await fetch(`${config.apiBaseUrl}/company`, {
+      const response = await fetch(`${config.backofficeApiUrl}/company`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ id, name, street, township, city }),
