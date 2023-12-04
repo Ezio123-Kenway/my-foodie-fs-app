@@ -13,7 +13,7 @@ interface Props {
 
 export const BackofficeLayout = ({ children }: Props) => {
   const { data: session } = useSession();
-  const router = useRouter();
+  const { isReady, ...router } = useRouter();
   const dispatch = useAppDispatch();
   const { init } = useAppSelector((state) => state.app);
 
@@ -21,7 +21,7 @@ export const BackofficeLayout = ({ children }: Props) => {
     if (session && !init) {
       dispatch(fetchAppData({}));
     }
-    if (!session) router.push("/backoffice");
+    if (isReady && !session) router.push("/backoffice");
   }, [session]);
 
   return (
