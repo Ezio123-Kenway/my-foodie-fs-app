@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { Box, Button } from "@mui/material";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -24,6 +24,6 @@ export default function Home() {
       </Box>
     );
   } else {
-    router.push("backoffice/orders");
+    router.push("/backoffice/orders");
   }
 }
